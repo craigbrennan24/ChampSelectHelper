@@ -8,4 +8,3 @@
 * Custom roles
 * Select multiple roles at once
 * Code optimization
------
