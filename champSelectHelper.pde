@@ -124,21 +124,21 @@ String setupSearchString( Role role )
 {
   String champSelectSearch = stringSplit[0];
   champSelectSearch += "Random$|^";
-  for( int i = 0; i < role.champions.length; i++ )
+  for( int i = 0; i < role.champions.size(); i++ )
   {
-    if( i != (role.champions.length-1) )
+    champSelectSearch += role.champions.get(i);
+    if( i != (role.champions.size()-1) )
     {
-      champSelectSearch += role.champions[i];
       champSelectSearch += stringSplit[1];
     }
     else
     {
-      champSelectSearch += role.champions[i];
       champSelectSearch += stringSplit[2];
     }
   }
   return champSelectSearch;
 }
+
 void populateLib()
 {
   String[] all, topAD, topAP, midAD, midAP, adc, supp, jungAP, jungAD;
@@ -150,23 +150,39 @@ void populateLib()
   supp = new String[] { "Supp", "Thresh", "Braum", "Nami", "Janna", "Blitzcrank" };
   jungAP = new String[] { "JungAP", "Elise", "Udyr", "Volibear" };
   jungAD = new String[] { "JungAD", "Lee Sin", "Kha'zix", "Jarvan IV", "Nocturne", "Udyr", "Vi", "Wukong", "Rengar" };
-  all = new String[] { "All", "Twitch", "Ahri", "Riven", "Jax", "Rengar", "Master Yi", "Aatrox", "Wukong",
-  "Ryze", "Lissandra", "Rumble", "Vladimir", "Yasuo", "Zed", "Riven", "Orianna", "Lissandra",
-  "Leblanc", "Graves", "Vayne", "Lucian", "Thresh", "Braum", "Nami", "Janna", "Blitzcrank",
-  "Elise", "Udyr", "Volibear", "Lee Sin", "Kha'zix", "Jarvan IV", "Nocturne", "Udyr", "Vi", "Wukong", "Lux", "Sivir", "Kalista" };
   
   float xPos, yPos;
   xPos = width/2;
   yPos = divSize;
   int m = 1;
-  lib.add(new Role(all, xPos, (yPos * (m++))));
-  lib.add(new Role(topAD, xPos, (yPos * (m++))));
-  lib.add(new Role(topAP, xPos, (yPos * (m++))));
-  lib.add(new Role(midAD, xPos, (yPos * (m++))));
-  lib.add(new Role(midAP, xPos, (yPos * (m++))));
-  lib.add(new Role(adc, xPos, (yPos * (m++))));
-  lib.add(new Role(supp, xPos, (yPos * (m++))));
-  lib.add(new Role(jungAP, xPos, (yPos * (m++))));
-  lib.add(new Role(jungAD, xPos, (yPos * (m++))));
+  //lib.add(new Role(all, xPos, (yPos * (m++))));
+  lib.add(new Role(topAD, xPos, (yPos * 2)));//The number after yPos is what position the buttons will be on the screen
+  lib.add(new Role(topAP, xPos, (yPos * 3)));
+  lib.add(new Role(midAD, xPos, (yPos * 4)));
+  lib.add(new Role(midAP, xPos, (yPos * 5)));
+  lib.add(new Role(adc, xPos, (yPos * 6)));
+  lib.add(new Role(supp, xPos, (yPos * 7)));
+  lib.add(new Role(jungAP, xPos, (yPos * 8)));
+  lib.add(new Role(jungAD, xPos, (yPos * 9)));
   
+  
+  ArrayList<String> allTemp = new ArrayList<String>();
+  for( Role r : lib )
+  {
+    for( int i = 0; i < r.champions.size(); i++ )
+    {
+      String next = r.champions.get(i);
+      if( !allTemp.contains(next) )
+      {
+        allTemp.add(next);
+      }
+    }
+  }
+  all = new String[allTemp.size()+1];
+  all[0] = "All";
+  for( int i = 0; i < allTemp.size(); i++ )
+  {
+    all[i+1] = allTemp.get(i);
+  }
+  lib.add( new Role(all, xPos, yPos));
 }

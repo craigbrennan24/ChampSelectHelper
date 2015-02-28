@@ -1,7 +1,7 @@
 class Role
 {
   String name;
-  String[] champions;
+  ArrayList<String> champions;
   float xPos, yPos;
   float hitboxX, hitboxY;
   color button, buttonMouseOver;
@@ -10,6 +10,7 @@ class Role
   
   Role( String[] array, float x, float y )
   {
+    champions = new ArrayList<String>();
     button = color( 140 );
     buttonMouseOver = color( 160 );
     copied = false;
@@ -18,12 +19,10 @@ class Role
     yPos = y;
     hitboxX = 100;
     hitboxY = 60;
-    int size = array.length;
     name = array[0];
-    champions = new String[size-1];
-    for( int i = 1; i < size; i++ )
+    for( int i = 1; i < array.length; i++ )
     {
-      champions[i-1] = array[i];
+      addChamp(array[i]);
     }
   }
   
@@ -61,6 +60,17 @@ class Role
     }
   }
   
+  boolean contains( String champion )
+  {
+    boolean ret = false;
+    for( String s : champions )
+    {
+      if( champion == s )
+        ret = true;
+    }
+    return ret;
+  }
+  
   boolean buttonHover()
   {
     float x = mouseX;
@@ -79,5 +89,13 @@ class Role
       }
     }
     return over;
+  }
+  
+  void addChamp( String champion )
+  {
+    if( !champions.contains(champion) )
+    {
+      champions.add(champion);
+    }
   }
 }
