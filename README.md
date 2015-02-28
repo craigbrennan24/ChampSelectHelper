@@ -2,7 +2,7 @@
 --------
 A simple program designed to help League of Legends players easily filter their champion pool during champion select by utilizing the filtering capabilities of the search function
 
-This program is free to use with no ads! You can help me out by recommending this program to your friends!
+This program is free to use with no ads, you can help me out by recommending this to your friends!
 
 
 ### How-To:  
