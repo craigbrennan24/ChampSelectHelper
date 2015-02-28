@@ -14,6 +14,11 @@ Format:
 ```
 "role_name","champion1","champion2","champion3"
 ```
+Example:  
+```
+"AD TOP","Darius","Garen","Riven"
+```
+The champions do not need to be in alphabetical order.
 
 
 ### Planned features:
