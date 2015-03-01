@@ -6,3 +6,6 @@
 "Supp","Thresh","Braum","Nami","Janna","Blitzcrank"
 "JungAD","Lee Sin","Kha'zix","Jarvan IV","Nocturne","Udyr","Vi","Wukong","Rengar"
 "JungAP","Elise","Udyr","Volibear"
+##Do not remove this message. This version does not support more than 8 roles.
+##Adding or removing roles will cause the software to crash, I am working on this.
+##Thank you for using my program! :)
