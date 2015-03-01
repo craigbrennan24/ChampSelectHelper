@@ -15,6 +15,7 @@ Format:
 ```
 "role_name","champion1","champion2","champion3"
 ```
+"role_name" will be the text that appears on the button, change as you like.  
 Example:  
 ```
 "AD TOP","Darius","Garen","Riven"
