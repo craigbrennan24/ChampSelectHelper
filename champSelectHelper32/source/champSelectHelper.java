@@ -33,14 +33,23 @@ String stringSplit[] = new String[] { "^", "$|^", "$" };
 boolean finishMoveScreen = false;
 int finishMoveScreen_flag = 0;
 boolean showMsg = false;
+boolean showMainScreen = true;
+int editNumber = -1;
+String[] championLib;
+Button editScreen_backButton;
+Button editScreen_removeButton;
+AddButton editScreen_addButton;
+int championLibDisplayed = 0;
+boolean editScreen_setup = false;
 
 public void setup()
 {
   float wHeight = calcPercent( displayHeight, 88 );
   divSize = PApplet.parseInt(calcPercent( wHeight, 9.5f));
-  size( 250, PApplet.parseInt(wHeight) );
+  size( 250, PApplet.parseInt(wHeight), P2D );
   frame.setResizable(false);
   populateLib(loadData());
+  populateChampLib();
   setTitle();
   msgRoll();
 }
@@ -49,8 +58,15 @@ public void draw()
 {
   moveScreen();
   background(200);
-  drawButtons();
-  msg();
+  if( showMainScreen )
+  {
+    drawButtons();
+    msg();
+  }
+  else
+  {
+    editScreen(editNumber);
+  }
 }
 
 public void moveScreen()
@@ -62,6 +78,59 @@ public void moveScreen()
     {
       finishMoveScreen = true;
     }
+  }
+}
+
+public void populateChampLib()
+{
+  championLib = new String[] {
+    "Aatrox", "Ahri", "Akali", "Alistar", "Amumu", "Anivia",
+    "Annie", "Ashe", "Azir", "Blitzcrank", "Brand", "Braum",
+    "Caitlyn", "Cassiopeia", "Cho'Gath", "Corki", "Darius",
+    "Diana", "Dr. Mundo", "Draven", "Elise", "Evelynn",
+    "Ezreal", "Fiddlesticks", "Fiora", "Fizz", "Galio",
+    "Gangplank", "Garen", "Gnar", "Gragas", "Graves",
+    "Hecarim", "Heimerdinger", "Irelia", "Janna", "Jarvan IV",
+    "Jax", "Jayce", "Jinx", "Kalista", "Karma",
+    "Karthus", "Kassadin", "Katarina", "Kayle", "Kennen",
+    "Kha'Zix", "Kog'Maw", "Leblanc", "Lee Sin", "Leona",
+    "Lissandra", "Lulu", "Lux", "Malphite", "Malzahar",
+    "Maokai", "Master Yi", "Miss Fortune", "Mordekaiser",
+    "Morgana", "Nami", "Nasus", "Nautilus", "Nidalee",
+    "Nocturne", "Nunu", "Olaf", "Orianna", "Pantheon",
+    "Poppy", "Quinn", "Rammus", "Rek'Sai", "Renekton",
+    "Rengar", "Riven", "Rumble", "Ryze", "Sejuani",
+    "Shaco", "Shen", "Shyvana", "Singed", "Sion",
+    "Sivir", "Skarner", "Sona", "Soraka", "Swain",
+    "Syndra", "Talon", "Taric", "Teemo", "Thresh",
+    "Tristana", "Trundle", "Tryndamere", "Twisted Fate",
+    "Twitch", "Udyr", "Urgot", "Varus", "Vayne",
+    "Veigar", "Vel'Koz", "Vi", "Viktor", "Vladimir",
+    "Volibear", "Warwick", "Wukong", "Xerath", "Xin Zhao",
+    "Yasuo", "Yorick", "Zac", "Zed", "Ziggs",
+    "Zilean", "Zyra" };
+}
+
+public void editScreen( int index )
+{
+  if( editScreen_setup )
+  {
+    String editRole = lib.get(index).name;
+    textSize(17);
+    text( "Editing", width/2, 50 );
+    line( (width/2)-60, 65, (width/2)+60, 65 );
+    textSize(20);
+    text( editRole, width/2, 85 );
+    editScreen_addButton.draw();
+    editScreen_removeButton.draw();
+    editScreen_backButton.draw();
+  }
+  else
+  {
+    editScreen_backButton = new Button( width/2, height-80, 75, 40, "Back" );
+    editScreen_addButton = new AddButton( width/2, (height/2)+100, 75, 40, "Add" );
+    editScreen_removeButton = new Button( width/2, (height/2)-100, 75, 40, "Del" );
+    editScreen_setup = true;
   }
 }
 
@@ -124,15 +193,30 @@ public void copyToClipboard( Role role )
   clpbrd.setContents(stringSelect, null);
 }
 
-public void mousePressed()
+public void changeChampionLibDisplayed( int up )
 {
-  for( int i = 0; i < lib.size(); i++ )
+  //up = 0 | move down
+  //up = 1 | move up
+  if( up == 1 )
   {
-    Role temp = lib.get(i);
-    if( temp.buttonHover() )
+    if( championLibDisplayed == championLib.length-1 )
     {
-      copyToClipboard(temp);
-      break;
+      championLibDisplayed = 0;
+    }
+    else
+    {
+      championLibDisplayed++;
+    }
+  }
+  else
+  {
+    if( championLibDisplayed == 0 )
+    {
+      championLibDisplayed = (championLib.length-1);
+    }
+    else
+    {
+      championLibDisplayed--; 
     }
   }
 }
@@ -158,38 +242,29 @@ public String setupSearchString( Role role )
 
 public void populateLib(ArrayList<String[]> data)
 {
-  String[] all, topAD, topAP, midAD, midAP, adc, supp, jungAP, jungAD;
-  /*topAD = new String[] { "TopAD", "Jayce", "Renekton", "Riven", "Jax", "Rengar", "Master Yi", "Aatrox", "Irelia" };
-  topAP = new String[] { "TopAP", "Ryze", "Lissandra", "Rumble", "Vladimir" };
-  midAD = new String[] { "MidAD", "Yasuo", "Zed", "Riven" };
-  midAP = new String[] { "MidAP", "Ahri", "Orianna", "Lissandra", "Leblanc", "Syndra", "Lux", "Fizz" };
-  adc = new String[] { "ADC", "Twitch", "Graves", "Vayne", "Lucian", "Sivir", "Kalista" };
-  supp = new String[] { "Supp", "Thresh", "Braum", "Nami", "Janna", "Blitzcrank" };
-  jungAP = new String[] { "JungAP", "Elise", "Udyr", "Volibear" };
-  jungAD = new String[] { "JungAD", "Lee Sin", "Kha'zix", "Jarvan IV", "Nocturne", "Udyr", "Vi", "Wukong", "Rengar" };
-  */
-  topAD = data.get(0);
-  topAP = data.get(1);
-  midAD = data.get(2);
-  midAP = data.get(3);
-  adc = data.get(4);
-  supp = data.get(5);
-  jungAD = data.get(6);
-  jungAP = data.get(7);
+  String[] all, role1, role2, role3, role4, role5, role6, role7, role8;
+  role1 = data.get(0);
+  role2 = data.get(1);
+  role3 = data.get(2);
+  role4 = data.get(3);
+  role5 = data.get(4);
+  role6 = data.get(5);
+  role7 = data.get(6);
+  role8 = data.get(7);
   
   float xPos, yPos;
   xPos = width/2;
   yPos = divSize;
   int m = 1;
   //lib.add(new Role(all, xPos, (yPos * (m++))));
-  lib.add(new Role(topAD, xPos, (yPos * 2)));//The number after yPos is what position the buttons will be on the screen
-  lib.add(new Role(topAP, xPos, (yPos * 3)));
-  lib.add(new Role(midAD, xPos, (yPos * 4)));
-  lib.add(new Role(midAP, xPos, (yPos * 5)));
-  lib.add(new Role(adc, xPos, (yPos * 6)));
-  lib.add(new Role(supp, xPos, (yPos * 7)));
-  lib.add(new Role(jungAD, xPos, (yPos * 8)));
-  lib.add(new Role(jungAP, xPos, (yPos * 9)));
+  lib.add(new Role(role1, xPos, (yPos * 2)));//The number after yPos is what position the buttons will be on the screen
+  lib.add(new Role(role2, xPos, (yPos * 3)));
+  lib.add(new Role(role3, xPos, (yPos * 4)));
+  lib.add(new Role(role4, xPos, (yPos * 5)));
+  lib.add(new Role(role5, xPos, (yPos * 6)));
+  lib.add(new Role(role6, xPos, (yPos * 7)));
+  lib.add(new Role(role7, xPos, (yPos * 8)));
+  lib.add(new Role(role8, xPos, (yPos * 9)));
   
   
   ArrayList<String> allTemp = new ArrayList<String>();
@@ -233,80 +308,66 @@ public ArrayList<String[]> loadData()
   
   return ret;
 }
-class Role
+class Button
 {
-  String name;
-  ArrayList<String> champions;
+  String buttonText;
   float xPos, yPos;
   float hitboxX, hitboxY;
-  int button, buttonMouseOver;
-  boolean copied;
-  float copied_timer;
+  int baseColor, hoverColor;
   
-  Role( String[] array, float x, float y )
+  Button(float xPos, float yPos, float hitboxX, float hitboxY)
   {
-    champions = new ArrayList<String>();
-    button = color( 140 );
-    buttonMouseOver = color( 160 );
-    copied = false;
-    copied_timer = 0;
-    xPos = x;
-    yPos = y;
-    hitboxX = 100;
-    hitboxY = 60;
-    name = array[0];
-    for( int i = 1; i < array.length; i++ )
-    {
-      addChamp(array[i]);
-    }
+    buttonText = "";
+    this.xPos = xPos;
+    this.yPos = yPos;
+    this.hitboxX = hitboxX;
+    this.hitboxY = hitboxY;
+    baseColor = color(140);
+    hoverColor = color(160);
+  }
+  
+  Button(float xPos, float yPos, float hitboxX, float hitboxY, int baseColor, int hoverColor)
+  {
+    this(xPos,yPos,hitboxX,hitboxY);
+    this.baseColor = baseColor;
+    this.hoverColor = hoverColor;
+  }
+  
+  Button(float xPos, float yPos, float hitboxX, float hitboxY, String name )
+  {
+    this(xPos,yPos,hitboxX,hitboxY);
+    buttonText = name;
+  }
+  
+  Button(float xPos, float yPos, float hitboxX, float hitboxY, int baseColor, int hoverColor, String name)
+  {
+    this(xPos,yPos,hitboxX,hitboxY,baseColor,hoverColor);
+    buttonText = name;
   }
   
   public void draw()
   {
-    textSize(20);
-    if( !buttonHover())
+    if( hovered())
     {
-      fill(button);
+      fill(baseColor);
     }
     else
     {
-      fill(buttonMouseOver);
+      fill(hoverColor);
     }
     rectMode(CENTER);
     rect( xPos, yPos, hitboxX, hitboxY);
-    textAlign(CENTER, CENTER);
-    fill(0);
-    text( name, xPos, yPos );
-    if( copied )
+    if( buttonText != "" )
     {
-      confirmCopied();
+      textSize(20);
+      textAlign(CENTER, CENTER);
+      fill(0);
+      text( buttonText, xPos, yPos );
     }
   }
+
   
-  public void confirmCopied()
-  {
-    fill(0);
-    textSize(15);
-    text( "Copied!", (( xPos + (hitboxX/2) ) + 35), yPos);
-    if( millis() - copied_timer >= 500 )
-    {
-      copied = false;
-      copied_timer = 0;
-    }
-  }
-  
-  public boolean contains( String champion )
-  {
-    boolean ret = false;
-    for( String s : champions )
-    {
-      if( champion == s )
-        ret = true;
-    }
-    return ret;
-  }
-  
-  public boolean buttonHover()
+  public boolean hovered()
   {
     float x = mouseX;
     float y = mouseY;
@@ -324,6 +385,177 @@ class Role
       }
     }
     return over;
+  }
+  
+}
+
+class AddButton extends Button
+{
+  float currentChampY, arrowY;
+  float arrowLeftX, arrowRightX;
+  float arrowSize;
+  PShape arrow;
+  
+  AddButton( float xPos, float yPos, float hitboxX, float hitboxY, String buttonName )
+  {
+    super(xPos,yPos,hitboxX,hitboxY,buttonName);
+    currentChampY = yPos-40;
+    arrowY = currentChampY-5;
+    arrowSize = 15;
+    arrowLeftX = xPos-75;
+    arrowRightX = xPos+75;
+    arrow = createShape();
+    arrow.beginShape(TRIANGLES);
+    arrow.fill(0);
+    arrow.noStroke();
+    arrow.vertex(0,0);
+    arrow.vertex(0,arrowSize);
+    arrow.vertex(arrowSize,(arrowSize/2));
+    arrow.endShape();
+  }
+  
+  public void draw()
+  {
+    super.draw();
+    shape(arrow, arrowRightX, arrowY);
+    pushMatrix();
+    translate(arrowLeftX, arrowY);
+    rotate(radians(180));
+    shape(arrow, 0, -15);
+    popMatrix();
+    textSize(17);
+    text( championLib[championLibDisplayed], xPos, currentChampY );
+  }
+  
+  public boolean hoverArrow( int which )
+  {
+    //0 = left arrow
+    //else = right arrow
+    boolean ret = false;
+    float x = mouseX;
+    float y = mouseY;
+    float hitboxLeft, hitboxRight, hitboxTop, hitboxBot;
+    hitboxLeft = 0;
+    hitboxRight = 0;
+    hitboxTop = 0;
+    hitboxBot = 0;
+    if( which == 0 )
+    {
+      hitboxLeft = arrowLeftX-arrowSize;
+      hitboxRight = arrowLeftX;
+      hitboxTop = arrowY-arrowSize;
+      hitboxBot = arrowY+arrowSize;
+    }
+    else
+    {
+      hitboxLeft = arrowRightX;
+      hitboxRight = arrowRightX+arrowSize;
+      hitboxTop = arrowY-arrowSize;
+      hitboxBot = arrowY+arrowSize;
+    }
+    if( x >= hitboxLeft && x <= hitboxRight )
+    {
+      if( y >= hitboxTop && y <= hitboxBot )
+      {
+        ret = true;
+      }
+    }
+    return ret;
+  }
+  
+}
+public void mousePressed()
+{
+  if( showMainScreen )
+  {
+    for( int i = 0; i < lib.size(); i++ )
+    {
+      Role temp = lib.get(i);
+      if( temp.button.hovered() )
+      {
+        if( mouseButton == LEFT )
+        {
+          copyToClipboard(temp);
+        }
+        else
+        {
+          if( temp.name != "All" )
+          {
+            showMainScreen = false;
+            editNumber = i;
+          }
+        }
+        break;
+      }
+    }
+  }
+  else
+  {
+    if( editScreen_backButton.hovered() && mouseButton == LEFT )
+    {
+      showMainScreen = true;
+    }
+    if( editScreen_addButton.hoverArrow(0) )
+    {
+      changeChampionLibDisplayed(0);
+    }
+    if( editScreen_addButton.hoverArrow(1) )
+    {
+      changeChampionLibDisplayed(1);
+    }
+  }
+}
+class Role
+{
+  String name;
+  ArrayList<String> champions;
+  boolean copied;
+  float copied_timer;
+  Button button;
+  
+  Role( String[] array, float x, float y )
+  {
+    champions = new ArrayList<String>();
+    copied = false;
+    copied_timer = 0;
+    name = array[0];
+    button = new Button( x, y, 100, 60, name );
+    for( int i = 1; i < array.length; i++ )
+    {
+      addChamp(array[i]);
+    }
+  }
+  
+  public void draw()
+  {
+    button.draw();
+    if( copied )
+    {
+      confirmCopied();
+    }
+  }
+  
+  public void confirmCopied()
+  {
+    fill(0);
+    textSize(15);
+    text( "Copied!", (( button.xPos + (button.hitboxX/2) ) + 35), button.yPos);
+    if( millis() - copied_timer >= 500 )
+    {
+      copied = false;
+      copied_timer = 0;
+    }
+  }
+  
+  public boolean contains( String champion )
+  {
+    boolean ret = false;
+    for( String s : champions )
+    {
+      if( champion == s )
+        ret = true;
+    }
+    return ret;
   }
   
   public void addChamp( String champion )

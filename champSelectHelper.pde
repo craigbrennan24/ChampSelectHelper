@@ -14,14 +14,23 @@ String stringSplit[] = new String[] { "^", "$|^", "$" };
 boolean finishMoveScreen = false;
 int finishMoveScreen_flag = 0;
 boolean showMsg = false;
+boolean showMainScreen = true;
+int editNumber = -1;
+String[] championLib;
+Button editScreen_backButton;
+Button editScreen_removeButton;
+AddButton editScreen_addButton;
+int championLibDisplayed = 0;
+boolean editScreen_setup = false;
 
 void setup()
 {
   float wHeight = calcPercent( displayHeight, 88 );
   divSize = int(calcPercent( wHeight, 9.5));
-  size( 250, int(wHeight) );
+  size( 250, int(wHeight), P2D );
   frame.setResizable(false);
   populateLib(loadData());
+  populateChampLib();
   setTitle();
   msgRoll();
 }
@@ -30,8 +39,15 @@ void draw()
 {
   moveScreen();
   background(200);
-  drawButtons();
-  msg();
+  if( showMainScreen )
+  {
+    drawButtons();
+    msg();
+  }
+  else
+  {
+    editScreen(editNumber);
+  }
 }
 
 void moveScreen()
@@ -43,6 +59,59 @@ void moveScreen()
     {
       finishMoveScreen = true;
     }
+  }
+}
+
+void populateChampLib()
+{
+  championLib = new String[] {
+    "Aatrox", "Ahri", "Akali", "Alistar", "Amumu", "Anivia",
+    "Annie", "Ashe", "Azir", "Blitzcrank", "Brand", "Braum",
+    "Caitlyn", "Cassiopeia", "Cho'Gath", "Corki", "Darius",
+    "Diana", "Dr. Mundo", "Draven", "Elise", "Evelynn",
+    "Ezreal", "Fiddlesticks", "Fiora", "Fizz", "Galio",
+    "Gangplank", "Garen", "Gnar", "Gragas", "Graves",
+    "Hecarim", "Heimerdinger", "Irelia", "Janna", "Jarvan IV",
+    "Jax", "Jayce", "Jinx", "Kalista", "Karma",
+    "Karthus", "Kassadin", "Katarina", "Kayle", "Kennen",
+    "Kha'Zix", "Kog'Maw", "Leblanc", "Lee Sin", "Leona",
+    "Lissandra", "Lulu", "Lux", "Malphite", "Malzahar",
+    "Maokai", "Master Yi", "Miss Fortune", "Mordekaiser",
+    "Morgana", "Nami", "Nasus", "Nautilus", "Nidalee",
+    "Nocturne", "Nunu", "Olaf", "Orianna", "Pantheon",
+    "Poppy", "Quinn", "Rammus", "Rek'Sai", "Renekton",
+    "Rengar", "Riven", "Rumble", "Ryze", "Sejuani",
+    "Shaco", "Shen", "Shyvana", "Singed", "Sion",
+    "Sivir", "Skarner", "Sona", "Soraka", "Swain",
+    "Syndra", "Talon", "Taric", "Teemo", "Thresh",
+    "Tristana", "Trundle", "Tryndamere", "Twisted Fate",
+    "Twitch", "Udyr", "Urgot", "Varus", "Vayne",
+    "Veigar", "Vel'Koz", "Vi", "Viktor", "Vladimir",
+    "Volibear", "Warwick", "Wukong", "Xerath", "Xin Zhao",
+    "Yasuo", "Yorick", "Zac", "Zed", "Ziggs",
+    "Zilean", "Zyra" };
+}
+
+void editScreen( int index )
+{
+  if( editScreen_setup )
+  {
+    String editRole = lib.get(index).name;
+    textSize(17);
+    text( "Editing", width/2, 50 );
+    line( (width/2)-60, 65, (width/2)+60, 65 );
+    textSize(20);
+    text( editRole, width/2, 85 );
+    editScreen_addButton.draw();
+    editScreen_removeButton.draw();
+    editScreen_backButton.draw();
+  }
+  else
+  {
+    editScreen_backButton = new Button( width/2, height-80, 75, 40, "Back" );
+    editScreen_addButton = new AddButton( width/2, (height/2)+100, 75, 40, "Add" );
+    editScreen_removeButton = new Button( width/2, (height/2)-100, 75, 40, "Del" );
+    editScreen_setup = true;
   }
 }
 
@@ -105,15 +174,30 @@ void copyToClipboard( Role role )
   clpbrd.setContents(stringSelect, null);
 }
 
-void mousePressed()
+void changeChampionLibDisplayed( int up )
 {
-  for( int i = 0; i < lib.size(); i++ )
+  //up = 0 | move down
+  //up = 1 | move up
+  if( up == 1 )
   {
-    Role temp = lib.get(i);
-    if( temp.buttonHover() )
+    if( championLibDisplayed == championLib.length-1 )
     {
-      copyToClipboard(temp);
-      break;
+      championLibDisplayed = 0;
+    }
+    else
+    {
+      championLibDisplayed++;
+    }
+  }
+  else
+  {
+    if( championLibDisplayed == 0 )
+    {
+      championLibDisplayed = (championLib.length-1);
+    }
+    else
+    {
+      championLibDisplayed--; 
     }
   }
 }
@@ -139,38 +223,29 @@ String setupSearchString( Role role )
 
 void populateLib(ArrayList<String[]> data)
 {
-  String[] all, topAD, topAP, midAD, midAP, adc, supp, jungAP, jungAD;
-  /*topAD = new String[] { "TopAD", "Jayce", "Renekton", "Riven", "Jax", "Rengar", "Master Yi", "Aatrox", "Irelia" };
-  topAP = new String[] { "TopAP", "Ryze", "Lissandra", "Rumble", "Vladimir" };
-  midAD = new String[] { "MidAD", "Yasuo", "Zed", "Riven" };
-  midAP = new String[] { "MidAP", "Ahri", "Orianna", "Lissandra", "Leblanc", "Syndra", "Lux", "Fizz" };
-  adc = new String[] { "ADC", "Twitch", "Graves", "Vayne", "Lucian", "Sivir", "Kalista" };
-  supp = new String[] { "Supp", "Thresh", "Braum", "Nami", "Janna", "Blitzcrank" };
-  jungAP = new String[] { "JungAP", "Elise", "Udyr", "Volibear" };
-  jungAD = new String[] { "JungAD", "Lee Sin", "Kha'zix", "Jarvan IV", "Nocturne", "Udyr", "Vi", "Wukong", "Rengar" };
-  */
-  topAD = data.get(0);
-  topAP = data.get(1);
-  midAD = data.get(2);
-  midAP = data.get(3);
-  adc = data.get(4);
-  supp = data.get(5);
-  jungAD = data.get(6);
-  jungAP = data.get(7);
+  String[] all, role1, role2, role3, role4, role5, role6, role7, role8;
+  role1 = data.get(0);
+  role2 = data.get(1);
+  role3 = data.get(2);
+  role4 = data.get(3);
+  role5 = data.get(4);
+  role6 = data.get(5);
+  role7 = data.get(6);
+  role8 = data.get(7);
   
   float xPos, yPos;
   xPos = width/2;
   yPos = divSize;
   int m = 1;
   //lib.add(new Role(all, xPos, (yPos * (m++))));
-  lib.add(new Role(topAD, xPos, (yPos * 2)));//The number after yPos is what position the buttons will be on the screen
-  lib.add(new Role(topAP, xPos, (yPos * 3)));
-  lib.add(new Role(midAD, xPos, (yPos * 4)));
-  lib.add(new Role(midAP, xPos, (yPos * 5)));
-  lib.add(new Role(adc, xPos, (yPos * 6)));
-  lib.add(new Role(supp, xPos, (yPos * 7)));
-  lib.add(new Role(jungAD, xPos, (yPos * 8)));
-  lib.add(new Role(jungAP, xPos, (yPos * 9)));
+  lib.add(new Role(role1, xPos, (yPos * 2)));//The number after yPos is what position the buttons will be on the screen
+  lib.add(new Role(role2, xPos, (yPos * 3)));
+  lib.add(new Role(role3, xPos, (yPos * 4)));
+  lib.add(new Role(role4, xPos, (yPos * 5)));
+  lib.add(new Role(role5, xPos, (yPos * 6)));
+  lib.add(new Role(role6, xPos, (yPos * 7)));
+  lib.add(new Role(role7, xPos, (yPos * 8)));
+  lib.add(new Role(role8, xPos, (yPos * 9)));
   
   
   ArrayList<String> allTemp = new ArrayList<String>();
