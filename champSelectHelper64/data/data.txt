@@ -8,4 +8,5 @@
 "JungAP","Elise","Udyr","Volibear"
 ##Do not remove this message. This version does not support more than 8 roles.
 ##Adding or removing roles will cause the software to crash, I am working on this.
+##If you do not want to use a certain role, remove all champion names but leave the role name.
 ##Thank you for using my program! :)
