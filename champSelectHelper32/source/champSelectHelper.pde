@@ -201,12 +201,15 @@ ArrayList<String[]> loadData()
   
   for( int i = 0; i < s.length; i++ )
   {
-    String[] t = split(s[i], ",");
-    for( int j = 0; j < t.length; j++ )
+    if( !s[i].contains("#") )//Ignore the warning message in data.txt
     {
-      t[j] = t[j].replaceAll("\"", "");
+      String[] t = split(s[i], ",");
+      for( int j = 0; j < t.length; j++ )
+      {
+        t[j] = t[j].replaceAll("\"", "");
+      }
+      ret.add(t);
     }
-    ret.add(t);
   }
   
   return ret;

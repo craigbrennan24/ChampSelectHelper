@@ -1,3 +1,22 @@
+import processing.core.*; 
+import processing.data.*; 
+import processing.event.*; 
+import processing.opengl.*; 
+
+import java.awt.datatransfer.*; 
+import java.awt.Toolkit; 
+
+import java.util.HashMap; 
+import java.util.ArrayList; 
+import java.io.File; 
+import java.io.BufferedReader; 
+import java.io.PrintWriter; 
+import java.io.InputStream; 
+import java.io.OutputStream; 
+import java.io.IOException; 
+
+public class champSelectHelper extends PApplet {
+
 //Created by Craig Brennan - Aug/Sept 2014
 /****
  *champSelectHelper is a tool that helps players
@@ -5,8 +24,8 @@
  *using the client's champion select search features
  ****/
  
-import java.awt.datatransfer.*;
-import java.awt.Toolkit;
+
+
 
 ArrayList<Role> lib = new ArrayList<Role>();
 int divSize;
@@ -15,18 +34,18 @@ boolean finishMoveScreen = false;
 int finishMoveScreen_flag = 0;
 boolean showMsg = false;
 
-void setup()
+public void setup()
 {
   float wHeight = calcPercent( displayHeight, 88 );
-  divSize = int(calcPercent( wHeight, 9.5));
-  size( 250, int(wHeight) );
+  divSize = PApplet.parseInt(calcPercent( wHeight, 9.5f));
+  size( 250, PApplet.parseInt(wHeight) );
   frame.setResizable(false);
   populateLib(loadData());
   setTitle();
   msgRoll();
 }
 
-void draw()
+public void draw()
 {
   moveScreen();
   background(200);
@@ -34,11 +53,11 @@ void draw()
   msg();
 }
 
-void moveScreen()
+public void moveScreen()
 {
   if( !finishMoveScreen )
   {
-    frame.setLocation( int(( displayWidth - width ) - (calcPercent(displayWidth, 1.3 ))), int(calcPercent(displayHeight, 1.3)) );
+    frame.setLocation( PApplet.parseInt(( displayWidth - width ) - (calcPercent(displayWidth, 1.3f ))), PApplet.parseInt(calcPercent(displayHeight, 1.3f)) );
     if( finishMoveScreen_flag++ > 4 )
     {
       finishMoveScreen = true;
@@ -46,22 +65,22 @@ void moveScreen()
   }
 }
 
-void setTitle()
+public void setTitle()
 {
-  int i = int(random(0, 10));
+  int i = PApplet.parseInt(random(0, 10));
   if( i <= 4 )
   {
-    frame.setTitle("(~˘▾˘)~");
+    frame.setTitle("(~\u02d8\u25be\u02d8)~");
   }
   else
   {
-    frame.setTitle("~(˘▾˘~)");
+    frame.setTitle("~(\u02d8\u25be\u02d8~)");
   }
 }
 
-void msgRoll()
+public void msgRoll()
 {
-  int i = int(random(0, 15));
+  int i = PApplet.parseInt(random(0, 15));
   int chance = 1;
   if( i == chance )
   {
@@ -69,7 +88,7 @@ void msgRoll()
   }
 }
 
-void msg()
+public void msg()
 {
   if( showMsg )
   {
@@ -78,7 +97,7 @@ void msg()
   }
 }
 
-float calcPercent( float x, float y )
+public float calcPercent( float x, float y )
 {
   float perc = 0;
   perc = x/100;
@@ -86,7 +105,7 @@ float calcPercent( float x, float y )
   return perc;
 }
 
-void drawButtons()
+public void drawButtons()
 {
   for( int i = 0; i < lib.size(); i++ )
   {
@@ -95,7 +114,7 @@ void drawButtons()
   }
 }
 
-void copyToClipboard( Role role )
+public void copyToClipboard( Role role )
 {
   role.copied = true;
   role.copied_timer = millis();
@@ -105,7 +124,7 @@ void copyToClipboard( Role role )
   clpbrd.setContents(stringSelect, null);
 }
 
-void mousePressed()
+public void mousePressed()
 {
   for( int i = 0; i < lib.size(); i++ )
   {
@@ -118,7 +137,7 @@ void mousePressed()
   }
 }
 
-String setupSearchString( Role role )
+public String setupSearchString( Role role )
 {
   String champSelectSearch = stringSplit[0];
   champSelectSearch += "Random$|^";
@@ -137,7 +156,7 @@ String setupSearchString( Role role )
   return champSelectSearch;
 }
 
-void populateLib(ArrayList<String[]> data)
+public void populateLib(ArrayList<String[]> data)
 {
   String[] all, topAD, topAP, midAD, midAP, adc, supp, jungAP, jungAD;
   /*topAD = new String[] { "TopAD", "Jayce", "Renekton", "Riven", "Jax", "Rengar", "Master Yi", "Aatrox", "Irelia" };
@@ -194,7 +213,7 @@ void populateLib(ArrayList<String[]> data)
   lib.add( new Role(all, xPos, yPos));
 }
 
-ArrayList<String[]> loadData()
+public ArrayList<String[]> loadData()
 {
   ArrayList<String[]> ret = new ArrayList<String[]>();
   String[] s = loadStrings("data.txt");
@@ -213,4 +232,114 @@ ArrayList<String[]> loadData()
   }
   
   return ret;
+}
+class Role
+{
+  String name;
+  ArrayList<String> champions;
+  float xPos, yPos;
+  float hitboxX, hitboxY;
+  int button, buttonMouseOver;
+  boolean copied;
+  float copied_timer;
+  
+  Role( String[] array, float x, float y )
+  {
+    champions = new ArrayList<String>();
+    button = color( 140 );
+    buttonMouseOver = color( 160 );
+    copied = false;
+    copied_timer = 0;
+    xPos = x;
+    yPos = y;
+    hitboxX = 100;
+    hitboxY = 60;
+    name = array[0];
+    for( int i = 1; i < array.length; i++ )
+    {
+      addChamp(array[i]);
+    }
+  }
+  
+  public void draw()
+  {
+    textSize(20);
+    if( !buttonHover())
+    {
+      fill(button);
+    }
+    else
+    {
+      fill(buttonMouseOver);
+    }
+    rectMode(CENTER);
+    rect( xPos, yPos, hitboxX, hitboxY);
+    textAlign(CENTER, CENTER);
+    fill(0);
+    text( name, xPos, yPos );
+    if( copied )
+    {
+      confirmCopied();
+    }
+  }
+  
+  public void confirmCopied()
+  {
+    fill(0);
+    textSize(15);
+    text( "Copied!", (( xPos + (hitboxX/2) ) + 35), yPos);
+    if( millis() - copied_timer >= 500 )
+    {
+      copied = false;
+      copied_timer = 0;
+    }
+  }
+  
+  public boolean contains( String champion )
+  {
+    boolean ret = false;
+    for( String s : champions )
+    {
+      if( champion == s )
+        ret = true;
+    }
+    return ret;
+  }
+  
+  public boolean buttonHover()
+  {
+    float x = mouseX;
+    float y = mouseY;
+    float buttonRight, buttonLeft, buttonTop, buttonBot;
+    buttonRight = xPos + (hitboxX/2);
+    buttonLeft = buttonRight - hitboxX;
+    buttonTop = yPos - (hitboxY/2);
+    buttonBot = buttonTop + hitboxY;
+    boolean over = false;
+    if( x <= buttonRight && x >= buttonLeft )
+    {
+      if( y <= buttonBot && y >= buttonTop )
+      {
+        over = true;
+      }
+    }
+    return over;
+  }
+  
+  public void addChamp( String champion )
+  {
+    if( !champions.contains(champion) )
+    {
+      champions.add(champion);
+    }
+  }
+}
+  static public void main(String[] passedArgs) {
+    String[] appletArgs = new String[] { "champSelectHelper" };
+    if (passedArgs != null) {
+      PApplet.main(concat(appletArgs, passedArgs));
+    } else {
+      PApplet.main(appletArgs);
+    }
+  }
 }

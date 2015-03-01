@@ -1,0 +1,8 @@
+"TopAD","Jayce","Renekton","Riven","Jax","Rengar","Master Yi","Aatrox","Irelia"
+"TopAP","Ryze","Lissandra","Rumble","Vladimir"
+"MidAD","Yasuo","Zed","Riven"
+"MidAP","Ahri","Orianna","Lissandra","Leblanc","Syndra","Lux","Fizz"
+"ADC","Twitch","Graves","Vayne","Lucian","Sivir","Kalista"
+"Supp","Thresh","Braum","Nami","Janna","Blitzcrank"
+"JungAD","Lee Sin","Kha'zix","Jarvan IV","Nocturne","Udyr","Vi","Wukong","Rengar"
+"JungAP","Elise","Udyr","Volibear"
