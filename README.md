@@ -22,6 +22,9 @@ Example:
 ```
 The champions do not need to be in alphabetical order.
 
+After downloading, the only folder you need is the one named "ChampSelectHelper" with the correct version (32/64 bit)  
+Please read the license provided.
+
 
 ### Planned features:
 
