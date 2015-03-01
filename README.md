@@ -4,6 +4,7 @@ A simple program designed to help League of Legends players easily filter their 
 
 This program is free to use with no ads, you can help me out by recommending this to your friends!
 
+Be sure to take correct version! ChampSelectHelper32/64 = 32 bit/64 bit
 
 ### How-To:  
 Inside the 'data' folder there is a file called 'data.txt', this is where you can add and remove champions
