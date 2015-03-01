@@ -7,7 +7,7 @@ This program is free to use with no ads, you can help me out by recommending thi
 Be sure to take correct version! ChampSelectHelper32/64 = 32 bit/64 bit
 
 ### How-To:  
-Inside the 'data' folder there is a file called 'data.txt', this is where you can add and remove champions
+<!--Inside the 'data' folder there is a file called 'data.txt', this is where you can add and remove champions
 from your pool.  
 Each role must be on it's own line and the first item in the list **must** be the name of the role, you can change this to whatever
 you wish.    
@@ -20,7 +20,9 @@ Example:
 ```
 "AD TOP","Darius","Garen","Riven"
 ```
-The champions do not need to be in alphabetical order.
+The champions do not need to be in alphabetical order.-->
+IN PROGRESS
+
 
 After downloading, the only folder you need is the one named "ChampSelectHelper" with the correct version (32/64 bit)  
 Please read the license provided.
