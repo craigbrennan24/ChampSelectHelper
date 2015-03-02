@@ -31,7 +31,6 @@ Please read the license provided.
 ### Planned features:
 
 
-* Make adding and removing champions from your roles possible during runtime
 * Custom roles
 * Select multiple roles at once
 * Code optimization
