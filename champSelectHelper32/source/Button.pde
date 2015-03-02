@@ -79,14 +79,14 @@ class Button
   
 }
 
-class AddButton extends Button
+class SelectButton extends Button
 {
   float currentChampY, arrowY;
   float arrowLeftX, arrowRightX;
   float arrowSize;
   PShape arrow;
   
-  AddButton( float xPos, float yPos, float hitboxX, float hitboxY, String buttonName )
+  SelectButton( float xPos, float yPos, float hitboxX, float hitboxY, String buttonName )
   {
     super(xPos,yPos,hitboxX,hitboxY,buttonName);
     currentChampY = yPos-40;
@@ -113,8 +113,6 @@ class AddButton extends Button
     rotate(radians(180));
     shape(arrow, 0, -15);
     popMatrix();
-    textSize(17);
-    text( championLib[championLibDisplayed], xPos, currentChampY );
   }
   
   boolean hoverArrow( int which )
@@ -153,4 +151,111 @@ class AddButton extends Button
     return ret;
   }
   
+}
+
+class AddButton extends SelectButton
+{
+  AddButton( float xPos, float yPos, float hitboxX, float hitboxY, String buttonName )
+  {
+    super(xPos, yPos, hitboxX, hitboxY, buttonName);
+  }
+  
+  void draw()
+  {
+    super.draw();
+    textSize(17);
+    text( championLib[championLibDisplayed], xPos, currentChampY );
+  }
+}
+
+class DelButton extends SelectButton
+{
+  int currentDisplay = 0;
+  
+  DelButton( float xPos, float yPos, float hitboxX, float hitboxY, String buttonName )
+  {
+    super(xPos, yPos, hitboxX, hitboxY, buttonName);
+  }
+  
+  void draw()
+  {
+    super.draw();
+    textSize(17);
+    if( lib.get(editNumber).champions.size() != 0 )
+    {
+      text( lib.get(editNumber).champions.get(currentDisplay), xPos, currentChampY );
+    }
+    else
+    {
+      text( "Empty", xPos, currentChampY );
+    }
+  }
+  
+  void cycleRight()
+  {
+    if( currentDisplay == (lib.get(editNumber).champions.size()-1) )
+    {
+      currentDisplay = 0;
+    }
+    else
+    {
+      currentDisplay++;
+    }
+  }
+  
+  void cycleLeft()
+  {
+     if( currentDisplay == 0 )
+     {
+       currentDisplay = (lib.get(editNumber).champions.size()-1);
+     }
+     else
+     {
+       currentDisplay--;
+     }
+  }
+  
+  void delete()
+  {
+    //First delete the file from the file so it will be remembered next time
+    PrintWriter writer;
+    String fName = "data/data.txt";
+    File f = new File(fName);
+    if( f.exists() )
+    {
+      f.delete();
+    }
+    writer = createWriter(fName);
+    //Create string in correct format for file
+    String output = "";
+    String skip = lib.get(editNumber).champions.get(currentDisplay);
+    for( int i = 0; i < (lib.size()-1); i++ )//Skip last because 'All' is the last element
+    {
+      for( int j = 0; j < lib.get(i).champions.size(); j++ )
+      {
+        if( j == 0 )
+        {
+          output += "\"" + lib.get(i).name + "\",";
+        }
+        if( lib.get(i).champions.get(j) != skip )
+        {
+          output += "\"" + lib.get(i).champions.get(j) + "\"";
+          if( j != (lib.get(i).champions.size()-1) )
+          {
+            output += ",";
+          }
+        }
+      }
+      if( i != (lib.size()-2) )
+      {
+        output += "|";
+      }
+    }
+    writer.print(output);
+    writer.flush();
+    writer.close();
+    //Then delete from virtual memory
+    lib.get(editNumber).champions.remove(currentDisplay);
+    currentDisplay = 0;
+  }
 }

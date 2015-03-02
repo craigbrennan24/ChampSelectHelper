@@ -7,6 +7,7 @@
  
 import java.awt.datatransfer.*;
 import java.awt.Toolkit;
+import java.io.File;
 
 ArrayList<Role> lib = new ArrayList<Role>();
 int divSize;
@@ -18,7 +19,7 @@ boolean showMainScreen = true;
 int editNumber = -1;
 String[] championLib;
 Button editScreen_backButton;
-Button editScreen_removeButton;
+DelButton editScreen_delButton;
 AddButton editScreen_addButton;
 int championLibDisplayed = 0;
 boolean editScreen_setup = false;
@@ -103,14 +104,14 @@ void editScreen( int index )
     textSize(20);
     text( editRole, width/2, 85 );
     editScreen_addButton.draw();
-    editScreen_removeButton.draw();
+    editScreen_delButton.draw();
     editScreen_backButton.draw();
   }
   else
   {
     editScreen_backButton = new Button( width/2, height-80, 75, 40, "Back" );
     editScreen_addButton = new AddButton( width/2, (height/2)+100, 75, 40, "Add" );
-    editScreen_removeButton = new Button( width/2, (height/2)-100, 75, 40, "Del" );
+    editScreen_delButton = new DelButton( width/2, (height/2)-100, 75, 40, "Del" );
     editScreen_setup = true;
   }
 }
@@ -274,17 +275,16 @@ ArrayList<String[]> loadData()
   ArrayList<String[]> ret = new ArrayList<String[]>();
   String[] s = loadStrings("data.txt");
   
-  for( int i = 0; i < s.length; i++ )
+  String[] t = split(s[0], "|");
+  
+  for( int i = 0; i < t.length; i++ )
   {
-    if( !s[i].contains("#") )//Ignore the warning message in data.txt
+    String[] temp = split(t[i], ",");
+    for( int j = 0; j < temp.length; j++ )
     {
-      String[] t = split(s[i], ",");
-      for( int j = 0; j < t.length; j++ )
-      {
-        t[j] = t[j].replaceAll("\"", "");
-      }
-      ret.add(t);
+      temp[j] = temp[j].replaceAll("\"", "");
     }
+    ret.add(temp);
   }
   
   return ret;

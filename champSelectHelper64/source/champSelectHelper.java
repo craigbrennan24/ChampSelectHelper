@@ -5,6 +5,7 @@ import processing.opengl.*;
 
 import java.awt.datatransfer.*; 
 import java.awt.Toolkit; 
+import java.io.File; 
 
 import java.util.HashMap; 
 import java.util.ArrayList; 
@@ -27,6 +28,7 @@ public class champSelectHelper extends PApplet {
 
 
 
+
 ArrayList<Role> lib = new ArrayList<Role>();
 int divSize;
 String stringSplit[] = new String[] { "^", "$|^", "$" };
@@ -37,7 +39,7 @@ boolean showMainScreen = true;
 int editNumber = -1;
 String[] championLib;
 Button editScreen_backButton;
-Button editScreen_removeButton;
+DelButton editScreen_delButton;
 AddButton editScreen_addButton;
 int championLibDisplayed = 0;
 boolean editScreen_setup = false;
@@ -122,14 +124,14 @@ public void editScreen( int index )
     textSize(20);
     text( editRole, width/2, 85 );
     editScreen_addButton.draw();
-    editScreen_removeButton.draw();
+    editScreen_delButton.draw();
     editScreen_backButton.draw();
   }
   else
   {
     editScreen_backButton = new Button( width/2, height-80, 75, 40, "Back" );
     editScreen_addButton = new AddButton( width/2, (height/2)+100, 75, 40, "Add" );
-    editScreen_removeButton = new Button( width/2, (height/2)-100, 75, 40, "Del" );
+    editScreen_delButton = new DelButton( width/2, (height/2)-100, 75, 40, "Del" );
     editScreen_setup = true;
   }
 }
@@ -293,17 +295,16 @@ public ArrayList<String[]> loadData()
   ArrayList<String[]> ret = new ArrayList<String[]>();
   String[] s = loadStrings("data.txt");
   
-  for( int i = 0; i < s.length; i++ )
+  String[] t = split(s[0], "|");
+  
+  for( int i = 0; i < t.length; i++ )
   {
-    if( !s[i].contains("#") )//Ignore the warning message in data.txt
+    String[] temp = split(t[i], ",");
+    for( int j = 0; j < temp.length; j++ )
     {
-      String[] t = split(s[i], ",");
-      for( int j = 0; j < t.length; j++ )
-      {
-        t[j] = t[j].replaceAll("\"", "");
-      }
-      ret.add(t);
+      temp[j] = temp[j].replaceAll("\"", "");
     }
+    ret.add(temp);
   }
   
   return ret;
@@ -389,14 +390,14 @@ class Button
   
 }
 
-class AddButton extends Button
+class SelectButton extends Button
 {
   float currentChampY, arrowY;
   float arrowLeftX, arrowRightX;
   float arrowSize;
   PShape arrow;
   
-  AddButton( float xPos, float yPos, float hitboxX, float hitboxY, String buttonName )
+  SelectButton( float xPos, float yPos, float hitboxX, float hitboxY, String buttonName )
   {
     super(xPos,yPos,hitboxX,hitboxY,buttonName);
     currentChampY = yPos-40;
@@ -423,8 +424,6 @@ class AddButton extends Button
     rotate(radians(180));
     shape(arrow, 0, -15);
     popMatrix();
-    textSize(17);
-    text( championLib[championLibDisplayed], xPos, currentChampY );
   }
   
   public boolean hoverArrow( int which )
@@ -464,6 +463,113 @@ class AddButton extends Button
   }
   
 }
+
+class AddButton extends SelectButton
+{
+  AddButton( float xPos, float yPos, float hitboxX, float hitboxY, String buttonName )
+  {
+    super(xPos, yPos, hitboxX, hitboxY, buttonName);
+  }
+  
+  public void draw()
+  {
+    super.draw();
+    textSize(17);
+    text( championLib[championLibDisplayed], xPos, currentChampY );
+  }
+}
+
+class DelButton extends SelectButton
+{
+  int currentDisplay = 0;
+  
+  DelButton( float xPos, float yPos, float hitboxX, float hitboxY, String buttonName )
+  {
+    super(xPos, yPos, hitboxX, hitboxY, buttonName);
+  }
+  
+  public void draw()
+  {
+    super.draw();
+    textSize(17);
+    if( lib.get(editNumber).champions.size() != 0 )
+    {
+      text( lib.get(editNumber).champions.get(currentDisplay), xPos, currentChampY );
+    }
+    else
+    {
+      text( "Empty", xPos, currentChampY );
+    }
+  }
+  
+  public void cycleRight()
+  {
+    if( currentDisplay == (lib.get(editNumber).champions.size()-1) )
+    {
+      currentDisplay = 0;
+    }
+    else
+    {
+      currentDisplay++;
+    }
+  }
+  
+  public void cycleLeft()
+  {
+     if( currentDisplay == 0 )
+     {
+       currentDisplay = (lib.get(editNumber).champions.size()-1);
+     }
+     else
+     {
+       currentDisplay--;
+     }
+  }
+  
+  public void delete()
+  {
+    //First delete the file from the file so it will be remembered next time
+    PrintWriter writer;
+    String fName = "data/data.txt";
+    File f = new File(fName);
+    if( f.exists() )
+    {
+      f.delete();
+    }
+    writer = createWriter(fName);
+    //Create string in correct format for file
+    String output = "";
+    String skip = lib.get(editNumber).champions.get(currentDisplay);
+    for( int i = 0; i < (lib.size()-1); i++ )//Skip last because 'All' is the last element
+    {
+      for( int j = 0; j < lib.get(i).champions.size(); j++ )
+      {
+        if( j == 0 )
+        {
+          output += "\"" + lib.get(i).name + "\",";
+        }
+        if( lib.get(i).champions.get(j) != skip )
+        {
+          output += "\"" + lib.get(i).champions.get(j) + "\"";
+          if( j != (lib.get(i).champions.size()-1) )
+          {
+            output += ",";
+          }
+        }
+      }
+      if( i != (lib.size()-2) )
+      {
+        output += "|";
+      }
+    }
+    writer.print(output);
+    writer.flush();
+    writer.close();
+    //Then delete from virtual memory
+    lib.get(editNumber).champions.remove(currentDisplay);
+    currentDisplay = 0;
+  }
+}
 public void mousePressed()
 {
   if( showMainScreen )
@@ -494,8 +600,19 @@ public void mousePressed()
     if( editScreen_backButton.hovered() && mouseButton == LEFT )
     {
       showMainScreen = true;
+      editScreen_delButton.currentDisplay = 0;
     }
-    if( editScreen_addButton.hoverArrow(0) )
+    checkArrows();//Check all arrows for user input
+    if( editScreen_delButton.hovered() && mouseButton == LEFT )
+    {
+      editScreen_delButton.delete();
+    }
+  }
+}
+
+public void checkArrows()
+{
+  if( editScreen_addButton.hoverArrow(0) )
     {
       changeChampionLibDisplayed(0);
     }
@@ -503,7 +620,14 @@ public void mousePressed()
     {
       changeChampionLibDisplayed(1);
     }
-  }
+    if( editScreen_delButton.hoverArrow(0) )
+    {
+      editScreen_delButton.cycleLeft();
+    }
+    if( editScreen_delButton.hoverArrow(1) )
+    {
+      editScreen_delButton.cycleRight();
+    }
 }
 class Role
 {
