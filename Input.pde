@@ -29,11 +29,19 @@ void mousePressed()
     {
       showMainScreen = true;
       editScreen_delButton.currentDisplay = 0;
+      editScreen_addButton.currentDisplay = 0;
     }
     checkArrows();//Check all arrows for user input
     if( editScreen_delButton.hovered() && mouseButton == LEFT )
     {
-      editScreen_delButton.delete();
+      if( !lib.get(editNumber).isEmpty() )
+      {
+        editScreen_delButton.delete();
+      }  
+    }
+    if( editScreen_addButton.hovered() && mouseButton == LEFT )
+    {
+      editScreen_addButton.insert();
     }
   }
 }
@@ -42,11 +50,11 @@ void checkArrows()
 {
   if( editScreen_addButton.hoverArrow(0) )
     {
-      changeChampionLibDisplayed(0);
+      editScreen_addButton.cycleLeft();
     }
     if( editScreen_addButton.hoverArrow(1) )
     {
-      changeChampionLibDisplayed(1);
+      editScreen_addButton.cycleRight();
     }
     if( editScreen_delButton.hoverArrow(0) )
     {

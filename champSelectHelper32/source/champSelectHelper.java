@@ -197,6 +197,7 @@ public void copyToClipboard( Role role )
 
 public void changeChampionLibDisplayed( int up )
 {
+  //Currently not being used but I don't want to delete incase it might be useful
   //up = 0 | move down
   //up = 1 | move up
   if( up == 1 )
@@ -466,26 +467,95 @@ class SelectButton extends Button
 
 class AddButton extends SelectButton
 {
+  int currentDisplay;
+  
   AddButton( float xPos, float yPos, float hitboxX, float hitboxY, String buttonName )
   {
     super(xPos, yPos, hitboxX, hitboxY, buttonName);
+    currentDisplay = 0;
   }
   
   public void draw()
   {
     super.draw();
     textSize(17);
-    text( championLib[championLibDisplayed], xPos, currentChampY );
+    text( championLib[currentDisplay], xPos, currentChampY );
+  }
+  
+  public void cycleRight()
+  {
+    if( currentDisplay == (championLib.length-1) )
+    {
+      currentDisplay = 0;
+    }
+    else
+    {
+      currentDisplay++;
+    }
+  }
+  
+  public void cycleLeft()
+  {
+     if( currentDisplay == 0 )
+     {
+       currentDisplay = (championLib.length-1);
+     }
+     else
+     {
+       currentDisplay--;
+     }
+  }
+  
+  public void insert()
+  {
+    //Add to virtual memory
+    lib.get(editNumber).addChamp(championLib[currentDisplay], true);
+    
+    //Add to file
+    PrintWriter writer;
+    String fName = "data/data.txt";
+    File f = new File(fName);
+    if( f.exists() )
+    {
+      f.delete();
+    }
+    writer = createWriter(fName);
+    //Create string in correct format for file
+    String output = "";
+    for( int i = 0; i < (lib.size()-1); i++ )//Skip last because 'All' is the last element
+    {
+      for( int j = 0; j < lib.get(i).champions.size(); j++ )
+      {
+        if( j == 0 )
+        {
+          output += "\"" + lib.get(i).name + "\",";
+        }
+        output += "\"" + lib.get(i).champions.get(j) + "\"";
+        if( j != (lib.get(i).champions.size()-1) )
+        {
+          output += ",";
+        }
+      }
+      if( i != (lib.size()-2) )
+      {
+        output += "|";
+      }
+    }
+    writer.print(output);
+    writer.flush();
+    writer.close();
+    currentDisplay = 0;
   }
 }
 
 class DelButton extends SelectButton
 {
-  int currentDisplay = 0;
+  int currentDisplay;
   
   DelButton( float xPos, float yPos, float hitboxX, float hitboxY, String buttonName )
   {
     super(xPos, yPos, hitboxX, hitboxY, buttonName);
+    currentDisplay = 0;
   }
   
   public void draw()
@@ -567,6 +637,8 @@ class DelButton extends SelectButton
     writer.close();
     //Then delete from virtual memory
     lib.get(editNumber).champions.remove(currentDisplay);
+    //And delete from 'All'
+    lib.get(lib.size()-1).champions.remove(skip);//Skip contains the name of the item being removed
     currentDisplay = 0;
   }
 }
@@ -601,11 +673,19 @@ public void mousePressed()
     {
       showMainScreen = true;
       editScreen_delButton.currentDisplay = 0;
+      editScreen_addButton.currentDisplay = 0;
     }
     checkArrows();//Check all arrows for user input
     if( editScreen_delButton.hovered() && mouseButton == LEFT )
     {
-      editScreen_delButton.delete();
+      if( !lib.get(editNumber).isEmpty() )
+      {
+        editScreen_delButton.delete();
+      }  
+    }
+    if( editScreen_addButton.hovered() && mouseButton == LEFT )
+    {
+      editScreen_addButton.insert();
     }
   }
 }
@@ -614,11 +694,11 @@ public void checkArrows()
 {
   if( editScreen_addButton.hoverArrow(0) )
     {
-      changeChampionLibDisplayed(0);
+      editScreen_addButton.cycleLeft();
     }
     if( editScreen_addButton.hoverArrow(1) )
     {
-      changeChampionLibDisplayed(1);
+      editScreen_addButton.cycleRight();
     }
     if( editScreen_delButton.hoverArrow(0) )
     {
@@ -646,7 +726,7 @@ class Role
     button = new Button( x, y, 100, 60, name );
     for( int i = 1; i < array.length; i++ )
     {
-      addChamp(array[i]);
+      addChamp(array[i], false);
     }
   }
   
@@ -671,22 +751,31 @@ class Role
     }
   }
   
-  public boolean contains( String champion )
+  public boolean isEmpty()
   {
     boolean ret = false;
-    for( String s : champions )
+    if( champions.size() <= 1 )
     {
-      if( champion == s )
-        ret = true;
+      ret = true;
     }
     return ret;
   }
   
-  public void addChamp( String champion )
+  public void addChamp( String champion, boolean inRuntime )
   {
     if( !champions.contains(champion) )
     {
       champions.add(champion);
+    }
+    //Add to all
+    if( inRuntime )
+    {
+      int t = lib.size();
+      t--;
+      if( !lib.get(t).champions.contains(champion) )
+      {
+        lib.get(t).addChamp(champion, false);
+      }
     }
   }
 }

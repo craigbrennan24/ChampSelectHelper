@@ -177,6 +177,7 @@ void copyToClipboard( Role role )
 
 void changeChampionLibDisplayed( int up )
 {
+  //Currently not being used but I don't want to delete incase it might be useful
   //up = 0 | move down
   //up = 1 | move up
   if( up == 1 )

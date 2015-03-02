@@ -15,7 +15,7 @@ class Role
     button = new Button( x, y, 100, 60, name );
     for( int i = 1; i < array.length; i++ )
     {
-      addChamp(array[i]);
+      addChamp(array[i], false);
     }
   }
   
@@ -40,22 +40,31 @@ class Role
     }
   }
   
-  boolean contains( String champion )
+  boolean isEmpty()
   {
     boolean ret = false;
-    for( String s : champions )
+    if( champions.size() <= 1 )
     {
-      if( champion == s )
-        ret = true;
+      ret = true;
     }
     return ret;
   }
   
-  void addChamp( String champion )
+  void addChamp( String champion, boolean inRuntime )
   {
     if( !champions.contains(champion) )
     {
       champions.add(champion);
+    }
+    //Add to all
+    if( inRuntime )
+    {
+      int t = lib.size();
+      t--;
+      if( !lib.get(t).champions.contains(champion) )
+      {
+        lib.get(t).addChamp(champion, false);
+      }
     }
   }
 }

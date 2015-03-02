@@ -155,26 +155,95 @@ class SelectButton extends Button
 
 class AddButton extends SelectButton
 {
+  int currentDisplay;
+  
   AddButton( float xPos, float yPos, float hitboxX, float hitboxY, String buttonName )
   {
     super(xPos, yPos, hitboxX, hitboxY, buttonName);
+    currentDisplay = 0;
   }
   
   void draw()
   {
     super.draw();
     textSize(17);
-    text( championLib[championLibDisplayed], xPos, currentChampY );
+    text( championLib[currentDisplay], xPos, currentChampY );
+  }
+  
+  void cycleRight()
+  {
+    if( currentDisplay == (championLib.length-1) )
+    {
+      currentDisplay = 0;
+    }
+    else
+    {
+      currentDisplay++;
+    }
+  }
+  
+  void cycleLeft()
+  {
+     if( currentDisplay == 0 )
+     {
+       currentDisplay = (championLib.length-1);
+     }
+     else
+     {
+       currentDisplay--;
+     }
+  }
+  
+  void insert()
+  {
+    //Add to virtual memory
+    lib.get(editNumber).addChamp(championLib[currentDisplay], true);
+    
+    //Add to file
+    PrintWriter writer;
+    String fName = "data/data.txt";
+    File f = new File(fName);
+    if( f.exists() )
+    {
+      f.delete();
+    }
+    writer = createWriter(fName);
+    //Create string in correct format for file
+    String output = "";
+    for( int i = 0; i < (lib.size()-1); i++ )//Skip last because 'All' is the last element
+    {
+      for( int j = 0; j < lib.get(i).champions.size(); j++ )
+      {
+        if( j == 0 )
+        {
+          output += "\"" + lib.get(i).name + "\",";
+        }
+        output += "\"" + lib.get(i).champions.get(j) + "\"";
+        if( j != (lib.get(i).champions.size()-1) )
+        {
+          output += ",";
+        }
+      }
+      if( i != (lib.size()-2) )
+      {
+        output += "|";
+      }
+    }
+    writer.print(output);
+    writer.flush();
+    writer.close();
+    currentDisplay = 0;
   }
 }
 
 class DelButton extends SelectButton
 {
-  int currentDisplay = 0;
+  int currentDisplay;
   
   DelButton( float xPos, float yPos, float hitboxX, float hitboxY, String buttonName )
   {
     super(xPos, yPos, hitboxX, hitboxY, buttonName);
+    currentDisplay = 0;
   }
   
   void draw()
@@ -256,6 +325,8 @@ class DelButton extends SelectButton
     writer.close();
     //Then delete from virtual memory
     lib.get(editNumber).champions.remove(currentDisplay);
+    //And delete from 'All'
+    lib.get(lib.size()-1).champions.remove(skip);//Skip contains the name of the item being removed
     currentDisplay = 0;
   }
 }
