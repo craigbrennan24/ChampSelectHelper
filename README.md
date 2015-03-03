@@ -8,7 +8,7 @@ the user then has to simply paste into the search bar and the champion pool will
 ```
 This program is free to use with no ads, you can help me out by recommending this to your friends!
 ```
-Be sure to take the correct version for your operating system! ChampSelectHelper32/64 = 32 bit/64 bit  
+Be sure to take the correct version for your operating system!   
 
 If you'd like to send feedback you can email me at craig_brennan24@hotmail.com
 
