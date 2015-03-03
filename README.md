@@ -23,14 +23,15 @@ Example:
 The champions do not need to be in alphabetical order.-->
 IN PROGRESS
 
-
+>**General**
 After downloading, the only folder you need is the one named "ChampSelectHelper" with the correct version (32/64 bit)  
 Please read the license provided.  
 
 ChampSelectHelper is a program designed to help filter player's champion pool during champion select.  
 This is accomplished by creating search strings using Riot's filtering functions and copying them to the user's keyboard,
 the user then has to simply paste into the search bar and the champion pool will be filtered to their selection.  
-
+  
+  
 >**Editing Roles**  
 To edit the champions stored in each role, right click on the button you wish to edit. You will be taken to an
 edit screen for that role.  
