@@ -10,10 +10,11 @@ Be sure to take correct version! ChampSelectHelper32/64 = 32 bit/64 bit
 
 ### Instructions:  
   
->**General**
+>**General**  
 After downloading, the only folder you need is the one named "ChampSelectHelper" with the correct version (32/64 bit)  
 Please read the license provided.  
   
+---
   
 >**Editing Roles**  
 To edit the champions stored in each role, right click on the button you wish to edit. You will be taken to an
