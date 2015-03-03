@@ -13,7 +13,10 @@ Be sure to take the correct version for your operating system! ChampSelectHelper
 ### Instructions:  
   
 >**General**  
-After downloading, the only folder you need is the one named "ChampSelectHelper" with the correct version (32/64 bit)  
+- Click on a button
+- Program compiles a special search term and copies to your clipboard
+- Paste into search bar in championselect  
+    
 Please read the license provided.  
   
 ---
