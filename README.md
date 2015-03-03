@@ -31,7 +31,7 @@ ChampSelectHelper is a program designed to help filter player's champion pool du
 This is accomplished by creating search strings using Riot's filtering functions and copying them to the user's keyboard,
 the user then has to simply paste into the search bar and the champion pool will be filtered to their selection.  
 
-->*Editing Roles*  
+-> *Editing Roles*  
 To edit the champions stored in each role, right click on the button you wish to edit. You will be taken to an
 edit screen for that role.  
 On the screen you will see a title at the top displaying which role you are editing, a list of champions currently 
