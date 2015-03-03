@@ -1,6 +1,6 @@
 # ChampSelectHelper
 --------
-Download links: [32bit](https://www.dropbox.com/s/0q68slnxvc38phs/champSelectHelper32.rar?dl=0) | [64bit](https://www.dropbox.com/s/5upuxl6elrubpko/champSelectHelper64.rar?dl=0)  
+Download links: [32bit](http://goo.gl/mFwr1l) | [64bit](http://goo.gl/3I5I5S)  
   
 A simple program designed to help League of Legends players easily filter their champion pool during champion select by utilizing the filtering capabilities of the search function  
 This is accomplished by creating search strings using Riot's filtering functions and copying them to the user's keyboard,
