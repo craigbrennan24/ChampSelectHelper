@@ -288,7 +288,6 @@ class AddButton extends SelectButton
     writer.print(output);
     writer.flush();
     writer.close();
-    currentDisplay = 0;
   }
 }
 
