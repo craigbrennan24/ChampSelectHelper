@@ -1,6 +1,7 @@
 # ChampSelectHelper
 --------
 Download links: [32bit](http://goo.gl/mFwr1l) | [64bit](http://goo.gl/3I5I5S)  
+Be sure to take the correct version for your operating system!  
   
 A simple program designed to help League of Legends players easily filter their champion pool during champion select by utilizing the filtering capabilities of the search function  
 This is accomplished by creating search strings using Riot's filtering functions and copying them to the user's keyboard,
@@ -8,7 +9,6 @@ the user then has to simply paste into the search bar and the champion pool will
 ```
 This program is free to use with no ads, you can help me out by recommending this to your friends!
 ```
-Be sure to take the correct version for your operating system!   
 
 If you'd like to send feedback you can email me at craig_brennan24@hotmail.com
 
