@@ -19,6 +19,15 @@ class Role
     }
   }
   
+  Role( float x, float y )
+  {
+    champions = new ArrayList<String>();
+    copied = false;
+    copied_timer = 0;
+    name = "role_name";
+    button = new Button( x, y, 100, 60, name );
+  }
+  
   void draw()
   {
     button.draw();
@@ -43,7 +52,7 @@ class Role
   boolean isEmpty()
   {
     boolean ret = false;
-    if( champions.size() <= 1 )
+    if( champions.size() == 0 )
     {
       ret = true;
     }
@@ -52,7 +61,7 @@ class Role
   
   void addChamp( String champion, boolean inRuntime )
   {
-    if( !champions.contains(champion) )
+    if( champions.size() == 0 | !champions.contains(champion) )
     {
       champions.add(champion);
     }

@@ -77,6 +77,55 @@ class Button
     return over;
   }
   
+  String createOutputString( int currentDisplay, boolean add )
+  {
+    //make delete = true to create output string that skips the currently selected champ.
+    String output = "";
+    String skip = null;
+    if( !add )
+    {
+      skip = lib.get(editNumber).champions.get(currentDisplay);
+    }
+    for( int i = 0; i < (lib.size()-1); i++ )//Skip last because 'All' is the last element
+    {
+      if( lib.get(i).champions.size() == 0 )
+      {
+        output += "\"" + lib.get(i).name + "\"";
+      }
+      else
+      {
+        for( int j = 0; j < lib.get(i).champions.size(); j++ )
+        {
+          if( j == 0 )
+          {
+            output += "\"" + lib.get(i).name + "\"";
+            if( !lib.get(i).isEmpty() )
+            {
+              output += ",";
+            }
+          }
+          if( !lib.get(i).isEmpty() )
+          {
+            if( lib.get(i).champions.get(j) != skip )
+            {
+              output += "\"" + lib.get(i).champions.get(j) + "\"";
+              if( j != (lib.get(i).champions.size()-1) )
+              {
+                output += ",";
+              }
+            }
+          }
+        }
+      }
+      if( i != (lib.size()-2) )
+      {
+        output += "|";
+      }
+    }
+    
+    return output;
+  }
+  
 }
 
 class SelectButton extends Button
@@ -85,6 +134,9 @@ class SelectButton extends Button
   float arrowLeftX, arrowRightX;
   float arrowSize;
   PShape arrow;
+  float totalX, currentX;
+  float miscTextY;
+  String current, total;
   
   SelectButton( float xPos, float yPos, float hitboxX, float hitboxY, String buttonName )
   {
@@ -161,13 +213,31 @@ class AddButton extends SelectButton
   {
     super(xPos, yPos, hitboxX, hitboxY, buttonName);
     currentDisplay = 0;
+    total = "Total: " + str(championLib.length);//championLib is static so total does not need to be in update()
+    totalX = (width/2)+60;
+    miscTextY = currentChampY-30;
+    currentX = (width/2)-60;
   }
   
   void draw()
   {
     super.draw();
+    update();
     textSize(17);
     text( championLib[currentDisplay], xPos, currentChampY );
+    displayMisc();
+  }
+  
+  void displayMisc()
+  {
+    textSize(12);
+    text( total, totalX, miscTextY );
+    text( current, currentX, miscTextY );
+  }
+  
+  void update()
+  {
+    current = "Current: " + str(currentDisplay+1);
   }
   
   void cycleRight()
@@ -200,6 +270,10 @@ class AddButton extends SelectButton
     lib.get(editNumber).addChamp(championLib[currentDisplay], true);
     
     //Add to file
+    if( !dataFileFound )
+    {
+      dataFileFound = true;
+    }
     PrintWriter writer;
     String fName = "data/data.txt";
     File f = new File(fName);
@@ -210,25 +284,7 @@ class AddButton extends SelectButton
     writer = createWriter(fName);
     //Create string in correct format for file
     String output = "";
-    for( int i = 0; i < (lib.size()-1); i++ )//Skip last because 'All' is the last element
-    {
-      for( int j = 0; j < lib.get(i).champions.size(); j++ )
-      {
-        if( j == 0 )
-        {
-          output += "\"" + lib.get(i).name + "\",";
-        }
-        output += "\"" + lib.get(i).champions.get(j) + "\"";
-        if( j != (lib.get(i).champions.size()-1) )
-        {
-          output += ",";
-        }
-      }
-      if( i != (lib.size()-2) )
-      {
-        output += "|";
-      }
-    }
+    output = createOutputString(currentDisplay, true );
     writer.print(output);
     writer.flush();
     writer.close();
@@ -244,19 +300,41 @@ class DelButton extends SelectButton
   {
     super(xPos, yPos, hitboxX, hitboxY, buttonName);
     currentDisplay = 0;
+    totalX = (width/2)+60;
+    miscTextY = currentChampY-30;
+    currentX = (width/2)-60;
   }
   
   void draw()
   {
     super.draw();
+    update();
     textSize(17);
-    if( lib.get(editNumber).champions.size() != 0 )
+    if( !lib.get(editNumber).isEmpty() )
     {
       text( lib.get(editNumber).champions.get(currentDisplay), xPos, currentChampY );
     }
     else
     {
       text( "Empty", xPos, currentChampY );
+    }
+    displayMisc();
+  }
+  
+  void displayMisc()
+  {
+    textSize(12);
+    text( total, totalX, miscTextY );
+    text( current, currentX, miscTextY );
+  }
+  
+  void update()
+  {
+    total = "Total: " + str(lib.get(editNumber).champions.size());
+    current = "Current: ";
+    if( !lib.get(editNumber).isEmpty() )
+    {
+      current += str(currentDisplay+1);
     }
   }
   
@@ -286,6 +364,10 @@ class DelButton extends SelectButton
   
   void delete()
   {
+    if( !dataFileFound )
+    {
+      dataFileFound = true;
+    }
     //First delete the file from the file so it will be remembered next time
     PrintWriter writer;
     String fName = "data/data.txt";
@@ -297,36 +379,13 @@ class DelButton extends SelectButton
     writer = createWriter(fName);
     //Create string in correct format for file
     String output = "";
-    String skip = lib.get(editNumber).champions.get(currentDisplay);
-    for( int i = 0; i < (lib.size()-1); i++ )//Skip last because 'All' is the last element
-    {
-      for( int j = 0; j < lib.get(i).champions.size(); j++ )
-      {
-        if( j == 0 )
-        {
-          output += "\"" + lib.get(i).name + "\",";
-        }
-        if( lib.get(i).champions.get(j) != skip )
-        {
-          output += "\"" + lib.get(i).champions.get(j) + "\"";
-          if( j != (lib.get(i).champions.size()-1) )
-          {
-            output += ",";
-          }
-        }
-      }
-      if( i != (lib.size()-2) )
-      {
-        output += "|";
-      }
-    }
+    output = createOutputString(currentDisplay,false);
     writer.print(output);
     writer.flush();
     writer.close();
     //Then delete from virtual memory
+    lib.get(lib.size()-1).champions.remove(lib.get(editNumber).champions.get(currentDisplay));//delete from 'all'
     lib.get(editNumber).champions.remove(currentDisplay);
-    //And delete from 'All'
-    lib.get(lib.size()-1).champions.remove(skip);//Skip contains the name of the item being removed
     currentDisplay = 0;
   }
 }

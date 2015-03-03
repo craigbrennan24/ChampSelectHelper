@@ -43,6 +43,7 @@ DelButton editScreen_delButton;
 AddButton editScreen_addButton;
 int championLibDisplayed = 0;
 boolean editScreen_setup = false;
+boolean dataFileFound = true;
 
 public void setup()
 {
@@ -64,53 +65,15 @@ public void draw()
   {
     drawButtons();
     msg();
+    if( !dataFileFound )
+    {
+      errorMsg();
+    }
   }
   else
   {
     editScreen(editNumber);
   }
-}
-
-public void moveScreen()
-{
-  if( !finishMoveScreen )
-  {
-    frame.setLocation( PApplet.parseInt(( displayWidth - width ) - (calcPercent(displayWidth, 1.3f ))), PApplet.parseInt(calcPercent(displayHeight, 1.3f)) );
-    if( finishMoveScreen_flag++ > 4 )
-    {
-      finishMoveScreen = true;
-    }
-  }
-}
-
-public void populateChampLib()
-{
-  championLib = new String[] {
-    "Aatrox", "Ahri", "Akali", "Alistar", "Amumu", "Anivia",
-    "Annie", "Ashe", "Azir", "Blitzcrank", "Brand", "Braum",
-    "Caitlyn", "Cassiopeia", "Cho'Gath", "Corki", "Darius",
-    "Diana", "Dr. Mundo", "Draven", "Elise", "Evelynn",
-    "Ezreal", "Fiddlesticks", "Fiora", "Fizz", "Galio",
-    "Gangplank", "Garen", "Gnar", "Gragas", "Graves",
-    "Hecarim", "Heimerdinger", "Irelia", "Janna", "Jarvan IV",
-    "Jax", "Jayce", "Jinx", "Kalista", "Karma",
-    "Karthus", "Kassadin", "Katarina", "Kayle", "Kennen",
-    "Kha'Zix", "Kog'Maw", "Leblanc", "Lee Sin", "Leona",
-    "Lissandra", "Lulu", "Lux", "Malphite", "Malzahar",
-    "Maokai", "Master Yi", "Miss Fortune", "Mordekaiser",
-    "Morgana", "Nami", "Nasus", "Nautilus", "Nidalee",
-    "Nocturne", "Nunu", "Olaf", "Orianna", "Pantheon",
-    "Poppy", "Quinn", "Rammus", "Rek'Sai", "Renekton",
-    "Rengar", "Riven", "Rumble", "Ryze", "Sejuani",
-    "Shaco", "Shen", "Shyvana", "Singed", "Sion",
-    "Sivir", "Skarner", "Sona", "Soraka", "Swain",
-    "Syndra", "Talon", "Taric", "Teemo", "Thresh",
-    "Tristana", "Trundle", "Tryndamere", "Twisted Fate",
-    "Twitch", "Udyr", "Urgot", "Varus", "Vayne",
-    "Veigar", "Vel'Koz", "Vi", "Viktor", "Vladimir",
-    "Volibear", "Warwick", "Wukong", "Xerath", "Xin Zhao",
-    "Yasuo", "Yorick", "Zac", "Zed", "Ziggs",
-    "Zilean", "Zyra" };
 }
 
 public void editScreen( int index )
@@ -136,29 +99,6 @@ public void editScreen( int index )
   }
 }
 
-public void setTitle()
-{
-  int i = PApplet.parseInt(random(0, 10));
-  if( i <= 4 )
-  {
-    frame.setTitle("(~\u02d8\u25be\u02d8)~");
-  }
-  else
-  {
-    frame.setTitle("~(\u02d8\u25be\u02d8~)");
-  }
-}
-
-public void msgRoll()
-{
-  int i = PApplet.parseInt(random(0, 15));
-  int chance = 1;
-  if( i == chance )
-  {
-    showMsg = true;
-  }
-}
-
 public void msg()
 {
   if( showMsg )
@@ -166,14 +106,6 @@ public void msg()
     textSize(15);
     text("It's all ogre now", width/2, 20 );
   }
-}
-
-public float calcPercent( float x, float y )
-{
-  float perc = 0;
-  perc = x/100;
-  perc *= y;
-  return perc;
 }
 
 public void drawButtons()
@@ -243,72 +175,11 @@ public String setupSearchString( Role role )
   return champSelectSearch;
 }
 
-public void populateLib(ArrayList<String[]> data)
+public void errorMsg()
 {
-  String[] all, role1, role2, role3, role4, role5, role6, role7, role8;
-  role1 = data.get(0);
-  role2 = data.get(1);
-  role3 = data.get(2);
-  role4 = data.get(3);
-  role5 = data.get(4);
-  role6 = data.get(5);
-  role7 = data.get(6);
-  role8 = data.get(7);
-  
-  float xPos, yPos;
-  xPos = width/2;
-  yPos = divSize;
-  int m = 1;
-  //lib.add(new Role(all, xPos, (yPos * (m++))));
-  lib.add(new Role(role1, xPos, (yPos * 2)));//The number after yPos is what position the buttons will be on the screen
-  lib.add(new Role(role2, xPos, (yPos * 3)));
-  lib.add(new Role(role3, xPos, (yPos * 4)));
-  lib.add(new Role(role4, xPos, (yPos * 5)));
-  lib.add(new Role(role5, xPos, (yPos * 6)));
-  lib.add(new Role(role6, xPos, (yPos * 7)));
-  lib.add(new Role(role7, xPos, (yPos * 8)));
-  lib.add(new Role(role8, xPos, (yPos * 9)));
-  
-  
-  ArrayList<String> allTemp = new ArrayList<String>();
-  for( Role r : lib )
-  {
-    for( int i = 0; i < r.champions.size(); i++ )
-    {
-      String next = r.champions.get(i);
-      if( !allTemp.contains(next) )
-      {
-        allTemp.add(next);
-      }
-    }
-  }
-  all = new String[allTemp.size()+1];
-  all[0] = "All";
-  for( int i = 0; i < allTemp.size(); i++ )
-  {
-    all[i+1] = allTemp.get(i);
-  }
-  lib.add( new Role(all, xPos, yPos));
-}
-
-public ArrayList<String[]> loadData()
-{
-  ArrayList<String[]> ret = new ArrayList<String[]>();
-  String[] s = loadStrings("data.txt");
-  
-  String[] t = split(s[0], "|");
-  
-  for( int i = 0; i < t.length; i++ )
-  {
-    String[] temp = split(t[i], ",");
-    for( int j = 0; j < temp.length; j++ )
-    {
-      temp[j] = temp[j].replaceAll("\"", "");
-    }
-    ret.add(temp);
-  }
-  
-  return ret;
+  fill(color(255,0,0));
+  textSize(15);
+  text( "Error: unable to locate data file", width/2, height-40);
 }
 class Button
 {
@@ -389,6 +260,55 @@ class Button
     return over;
   }
   
+  public String createOutputString( int currentDisplay, boolean add )
+  {
+    //make delete = true to create output string that skips the currently selected champ.
+    String output = "";
+    String skip = null;
+    if( !add )
+    {
+      skip = lib.get(editNumber).champions.get(currentDisplay);
+    }
+    for( int i = 0; i < (lib.size()-1); i++ )//Skip last because 'All' is the last element
+    {
+      if( lib.get(i).champions.size() == 0 )
+      {
+        output += "\"" + lib.get(i).name + "\"";
+      }
+      else
+      {
+        for( int j = 0; j < lib.get(i).champions.size(); j++ )
+        {
+          if( j == 0 )
+          {
+            output += "\"" + lib.get(i).name + "\"";
+            if( !lib.get(i).isEmpty() )
+            {
+              output += ",";
+            }
+          }
+          if( !lib.get(i).isEmpty() )
+          {
+            if( lib.get(i).champions.get(j) != skip )
+            {
+              output += "\"" + lib.get(i).champions.get(j) + "\"";
+              if( j != (lib.get(i).champions.size()-1) )
+              {
+                output += ",";
+              }
+            }
+          }
+        }
+      }
+      if( i != (lib.size()-2) )
+      {
+        output += "|";
+      }
+    }
+    
+    return output;
+  }
+  
 }
 
 class SelectButton extends Button
@@ -397,6 +317,9 @@ class SelectButton extends Button
   float arrowLeftX, arrowRightX;
   float arrowSize;
   PShape arrow;
+  float totalX, currentX;
+  float miscTextY;
+  String current, total;
   
   SelectButton( float xPos, float yPos, float hitboxX, float hitboxY, String buttonName )
   {
@@ -473,13 +396,31 @@ class AddButton extends SelectButton
   {
     super(xPos, yPos, hitboxX, hitboxY, buttonName);
     currentDisplay = 0;
+    total = "Total: " + str(championLib.length);//championLib is static so total does not need to be in update()
+    totalX = (width/2)+60;
+    miscTextY = currentChampY-30;
+    currentX = (width/2)-60;
   }
   
   public void draw()
   {
     super.draw();
+    update();
     textSize(17);
     text( championLib[currentDisplay], xPos, currentChampY );
+    displayMisc();
+  }
+  
+  public void displayMisc()
+  {
+    textSize(12);
+    text( total, totalX, miscTextY );
+    text( current, currentX, miscTextY );
+  }
+  
+  public void update()
+  {
+    current = "Current: " + str(currentDisplay+1);
   }
   
   public void cycleRight()
@@ -512,6 +453,10 @@ class AddButton extends SelectButton
     lib.get(editNumber).addChamp(championLib[currentDisplay], true);
     
     //Add to file
+    if( !dataFileFound )
+    {
+      dataFileFound = true;
+    }
     PrintWriter writer;
     String fName = "data/data.txt";
     File f = new File(fName);
@@ -522,25 +467,7 @@ class AddButton extends SelectButton
     writer = createWriter(fName);
     //Create string in correct format for file
     String output = "";
-    for( int i = 0; i < (lib.size()-1); i++ )//Skip last because 'All' is the last element
-    {
-      for( int j = 0; j < lib.get(i).champions.size(); j++ )
-      {
-        if( j == 0 )
-        {
-          output += "\"" + lib.get(i).name + "\",";
-        }
-        output += "\"" + lib.get(i).champions.get(j) + "\"";
-        if( j != (lib.get(i).champions.size()-1) )
-        {
-          output += ",";
-        }
-      }
-      if( i != (lib.size()-2) )
-      {
-        output += "|";
-      }
-    }
+    output = createOutputString(currentDisplay, true );
     writer.print(output);
     writer.flush();
     writer.close();
@@ -556,19 +483,41 @@ class DelButton extends SelectButton
   {
     super(xPos, yPos, hitboxX, hitboxY, buttonName);
     currentDisplay = 0;
+    totalX = (width/2)+60;
+    miscTextY = currentChampY-30;
+    currentX = (width/2)-60;
   }
   
   public void draw()
   {
     super.draw();
+    update();
     textSize(17);
-    if( lib.get(editNumber).champions.size() != 0 )
+    if( !lib.get(editNumber).isEmpty() )
     {
       text( lib.get(editNumber).champions.get(currentDisplay), xPos, currentChampY );
     }
     else
     {
       text( "Empty", xPos, currentChampY );
+    }
+    displayMisc();
+  }
+  
+  public void displayMisc()
+  {
+    textSize(12);
+    text( total, totalX, miscTextY );
+    text( current, currentX, miscTextY );
+  }
+  
+  public void update()
+  {
+    total = "Total: " + str(lib.get(editNumber).champions.size());
+    current = "Current: ";
+    if( !lib.get(editNumber).isEmpty() )
+    {
+      current += str(currentDisplay+1);
     }
   }
   
@@ -598,6 +547,10 @@ class DelButton extends SelectButton
   
   public void delete()
   {
+    if( !dataFileFound )
+    {
+      dataFileFound = true;
+    }
     //First delete the file from the file so it will be remembered next time
     PrintWriter writer;
     String fName = "data/data.txt";
@@ -609,36 +562,13 @@ class DelButton extends SelectButton
     writer = createWriter(fName);
     //Create string in correct format for file
     String output = "";
-    String skip = lib.get(editNumber).champions.get(currentDisplay);
-    for( int i = 0; i < (lib.size()-1); i++ )//Skip last because 'All' is the last element
-    {
-      for( int j = 0; j < lib.get(i).champions.size(); j++ )
-      {
-        if( j == 0 )
-        {
-          output += "\"" + lib.get(i).name + "\",";
-        }
-        if( lib.get(i).champions.get(j) != skip )
-        {
-          output += "\"" + lib.get(i).champions.get(j) + "\"";
-          if( j != (lib.get(i).champions.size()-1) )
-          {
-            output += ",";
-          }
-        }
-      }
-      if( i != (lib.size()-2) )
-      {
-        output += "|";
-      }
-    }
+    output = createOutputString(currentDisplay,false);
     writer.print(output);
     writer.flush();
     writer.close();
     //Then delete from virtual memory
+    lib.get(lib.size()-1).champions.remove(lib.get(editNumber).champions.get(currentDisplay));//delete from 'all'
     lib.get(editNumber).champions.remove(currentDisplay);
-    //And delete from 'All'
-    lib.get(lib.size()-1).champions.remove(skip);//Skip contains the name of the item being removed
     currentDisplay = 0;
   }
 }
@@ -730,6 +660,15 @@ class Role
     }
   }
   
+  Role( float x, float y )
+  {
+    champions = new ArrayList<String>();
+    copied = false;
+    copied_timer = 0;
+    name = "role_name";
+    button = new Button( x, y, 100, 60, name );
+  }
+  
   public void draw()
   {
     button.draw();
@@ -754,7 +693,7 @@ class Role
   public boolean isEmpty()
   {
     boolean ret = false;
-    if( champions.size() <= 1 )
+    if( champions.size() == 0 )
     {
       ret = true;
     }
@@ -763,7 +702,7 @@ class Role
   
   public void addChamp( String champion, boolean inRuntime )
   {
-    if( !champions.contains(champion) )
+    if( champions.size() == 0 | !champions.contains(champion) )
     {
       champions.add(champion);
     }
@@ -778,6 +717,175 @@ class Role
       }
     }
   }
+}
+public void setTitle()
+{
+  int i = PApplet.parseInt(random(0, 10));
+  if( i <= 4 )
+  {
+    frame.setTitle("(~\u02d8\u25be\u02d8)~");
+  }
+  else
+  {
+    frame.setTitle("~(\u02d8\u25be\u02d8~)");
+  }
+}
+
+public void moveScreen()
+{
+  if( !finishMoveScreen )
+  {
+    frame.setLocation( PApplet.parseInt(( displayWidth - width ) - (calcPercent(displayWidth, 1.3f ))), PApplet.parseInt(calcPercent(displayHeight, 1.3f)) );
+    if( finishMoveScreen_flag++ > 4 )
+    {
+      finishMoveScreen = true;
+    }
+  }
+}
+
+public void populateChampLib()
+{
+  championLib = new String[] {
+    "Aatrox", "Ahri", "Akali", "Alistar", "Amumu", "Anivia",
+    "Annie", "Ashe", "Azir", "Blitzcrank", "Brand", "Braum",
+    "Caitlyn", "Cassiopeia", "Cho'Gath", "Corki", "Darius",
+    "Diana", "Dr. Mundo", "Draven", "Elise", "Evelynn",
+    "Ezreal", "Fiddlesticks", "Fiora", "Fizz", "Galio",
+    "Gangplank", "Garen", "Gnar", "Gragas", "Graves",
+    "Hecarim", "Heimerdinger", "Irelia", "Janna", "Jarvan IV",
+    "Jax", "Jayce", "Jinx", "Kalista", "Karma",
+    "Karthus", "Kassadin", "Katarina", "Kayle", "Kennen",
+    "Kha'Zix", "Kog'Maw", "Leblanc", "Lee Sin", "Leona",
+    "Lissandra", "Lulu", "Lux", "Malphite", "Malzahar",
+    "Maokai", "Master Yi", "Miss Fortune", "Mordekaiser",
+    "Morgana", "Nami", "Nasus", "Nautilus", "Nidalee",
+    "Nocturne", "Nunu", "Olaf", "Orianna", "Pantheon",
+    "Poppy", "Quinn", "Rammus", "Rek'Sai", "Renekton",
+    "Rengar", "Riven", "Rumble", "Ryze", "Sejuani",
+    "Shaco", "Shen", "Shyvana", "Singed", "Sion",
+    "Sivir", "Skarner", "Sona", "Soraka", "Swain",
+    "Syndra", "Talon", "Taric", "Teemo", "Thresh",
+    "Tristana", "Trundle", "Tryndamere", "Twisted Fate",
+    "Twitch", "Udyr", "Urgot", "Varus", "Vayne",
+    "Veigar", "Vel'Koz", "Vi", "Viktor", "Vladimir",
+    "Volibear", "Warwick", "Wukong", "Xerath", "Xin Zhao",
+    "Yasuo", "Yorick", "Zac", "Zed", "Ziggs",
+    "Zilean", "Zyra" };
+}
+
+public void msgRoll()
+{
+  int i = PApplet.parseInt(random(0, 15));
+  int chance = 1;
+  if( i == chance )
+  {
+    showMsg = true;
+  }
+}
+
+public float calcPercent( float x, float y )
+{
+  float perc = 0;
+  perc = x/100;
+  perc *= y;
+  return perc;
+}
+
+public void populateLib(ArrayList<String[]> data)
+{
+  String[] all, role1, role2, role3, role4, role5, role6, role7, role8;
+  role1 = new String[]{};
+  role2 = new String[]{};
+  role3 = new String[]{};
+  role4 = new String[]{};
+  role5 = new String[]{};
+  role6 = new String[]{};
+  role7 = new String[]{};
+  role8 = new String[]{};
+  if( data.size() > 0 )
+  {
+    role1 = data.get(0);
+    role2 = data.get(1);
+    role3 = data.get(2);
+    role4 = data.get(3);
+    role5 = data.get(4);
+    role6 = data.get(5);
+    role7 = data.get(6);
+    role8 = data.get(7);
+  }
+  
+  float xPos, yPos;
+  xPos = width/2;
+  yPos = divSize;
+  if( data.size() > 0 )
+  {
+    lib.add(new Role(role1, xPos, (yPos * 2)));//The number after yPos is what position the buttons will be on the screen
+    lib.add(new Role(role2, xPos, (yPos * 3)));
+    lib.add(new Role(role3, xPos, (yPos * 4)));
+    lib.add(new Role(role4, xPos, (yPos * 5)));
+    lib.add(new Role(role5, xPos, (yPos * 6)));
+    lib.add(new Role(role6, xPos, (yPos * 7)));
+    lib.add(new Role(role7, xPos, (yPos * 8)));
+    lib.add(new Role(role8, xPos, (yPos * 9)));
+  }
+  else
+  {
+    lib.add(new Role(xPos, (yPos * 2)));
+    lib.add(new Role(xPos, (yPos * 3)));
+    lib.add(new Role(xPos, (yPos * 4)));
+    lib.add(new Role(xPos, (yPos * 5)));
+    lib.add(new Role(xPos, (yPos * 6)));
+    lib.add(new Role(xPos, (yPos * 7)));
+    lib.add(new Role(xPos, (yPos * 8)));
+    lib.add(new Role(xPos, (yPos * 9))); 
+  }
+  
+  ArrayList<String> allTemp = new ArrayList<String>();
+  for( Role r : lib )
+  {
+    for( int i = 0; i < r.champions.size(); i++ )
+    {
+      String next = r.champions.get(i);
+      if( !allTemp.contains(next) )
+      {
+        allTemp.add(next);
+      }
+    }
+  }
+  all = new String[allTemp.size()+1];
+  all[0] = "All";
+  for( int i = 0; i < allTemp.size(); i++ )
+  {
+    all[i+1] = allTemp.get(i);
+  }
+  lib.add( new Role(all, xPos, yPos));
+}
+
+public ArrayList<String[]> loadData()
+{
+  ArrayList<String[]> ret = new ArrayList<String[]>();
+  
+  String[] s = loadStrings("/data/data.txt");
+  if( s != null )
+  {
+    String[] t = split(s[0], "|");
+    
+    for( int i = 0; i < t.length; i++ )
+    {
+      String[] temp = split(t[i], ",");
+      for( int j = 0; j < temp.length; j++ )
+      {
+        temp[j] = temp[j].replaceAll("\"", "");
+      }
+      ret.add(temp);
+    }
+  }
+  else
+  {
+    dataFileFound = false;
+  }
+  
+  return ret;
 }
   static public void main(String[] passedArgs) {
     String[] appletArgs = new String[] { "champSelectHelper" };
