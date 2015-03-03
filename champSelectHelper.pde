@@ -21,8 +21,10 @@ String[] championLib;
 Button editScreen_backButton;
 DelButton editScreen_delButton;
 AddButton editScreen_addButton;
+Button helpButton;
 int championLibDisplayed = 0;
 boolean editScreen_setup = false;
+boolean mainScreen_setup = false;
 boolean dataFileFound = true;
 
 void setup()
@@ -43,11 +45,19 @@ void draw()
   background(200);
   if( showMainScreen )
   {
-    drawButtons();
-    msg();
-    if( !dataFileFound )
+    if( mainScreen_setup )
     {
-      errorMsg();
+      drawButtons();
+      msg();
+      if( !dataFileFound )
+      {
+        errorMsg();
+      }
+    }
+    else
+    {
+      helpButton = new Button( (width-25), 25, 30, 30, "?" );
+      mainScreen_setup = true;
     }
   }
   else
@@ -95,6 +105,7 @@ void drawButtons()
     Role temp = lib.get(i);
     temp.draw();
   }
+  helpButton.draw();
 }
 
 void copyToClipboard( Role role )

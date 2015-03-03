@@ -22,6 +22,10 @@ void mousePressed()
         break;
       }
     }
+    if( helpButton.hovered() && mouseButton == LEFT )
+    {
+      link("https://github.com/craigbrennan24/ChampSelectHelper/blob/master/README.md");
+    }
   }
   else
   {
