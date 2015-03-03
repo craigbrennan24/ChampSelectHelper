@@ -3,9 +3,9 @@
 A simple program designed to help League of Legends players easily filter their champion pool during champion select by utilizing the filtering capabilities of the search function  
 This is accomplished by creating search strings using Riot's filtering functions and copying them to the user's keyboard,
 the user then has to simply paste into the search bar and the champion pool will be filtered to their selection.  
-
+```
 This program is free to use with no ads, you can help me out by recommending this to your friends!
-
+```
 Be sure to take correct version! ChampSelectHelper32/64 = 32 bit/64 bit
 
 ### Instructions:  
