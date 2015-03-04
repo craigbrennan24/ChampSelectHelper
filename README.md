@@ -1,5 +1,5 @@
-# ChampSelectHelper
---------
+# ChampSelectHelper  
+
 Download links: [32bit](http://goo.gl/mFwr1l) | [64bit](http://goo.gl/3I5I5S)  
 Be sure to take the correct version for your operating system!  
   
