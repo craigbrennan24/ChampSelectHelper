@@ -26,6 +26,7 @@ int championLibDisplayed = 0;
 boolean editScreen_setup = false;
 boolean mainScreen_setup = false;
 boolean dataFileFound = true;
+int errorCode = 0;
 
 void setup()
 {
@@ -170,5 +171,5 @@ void errorMsg()
 {
   fill(color(255,0,0));
   textSize(15);
-  text( "Error: unable to locate data file", width/2, height-40);
+  text( "Error" + str(errorCode) + ": unable to locate data file", width/2, height-40);
 }

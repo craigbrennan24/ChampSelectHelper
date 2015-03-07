@@ -25,7 +25,16 @@ void moveScreen()
 
 void populateChampLib()
 {
-  championLib = new String[] {
+  
+  String[] s = loadStrings("/data/championLib.txt");
+  if( s != null )
+  {
+    championLib = split(s[0], "|");
+    championLib = sort(championLib);
+  }
+  else
+  {
+    championLib = new String[] {
     "Aatrox", "Ahri", "Akali", "Alistar", "Amumu", "Anivia",
     "Annie", "Ashe", "Azir", "Blitzcrank", "Brand", "Braum",
     "Caitlyn", "Cassiopeia", "Cho'Gath", "Corki", "Darius",
@@ -51,6 +60,9 @@ void populateChampLib()
     "Volibear", "Warwick", "Wukong", "Xerath", "Xin Zhao",
     "Yasuo", "Yorick", "Zac", "Zed", "Ziggs",
     "Zilean", "Zyra" };
+    dataFileFound = false;
+    errorCode = 2;
+  }
 }
 
 void msgRoll()
@@ -163,6 +175,7 @@ ArrayList<String[]> loadData()
   else
   {
     dataFileFound = false;
+    errorCode = 1;
   }
   
   return ret;
