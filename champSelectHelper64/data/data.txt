@@ -1,0 +1,1 @@
+"TopAD","Irelia","Gnar","Riven"|"TopAP","Lissandra","Rumble","Vladimir"|"MidAD","Zed","Yasuo",|"MidAP","Orianna","Ahri","Leblanc"|"ADC","Graves","Jinx","Caitlyn"|"Supp","Thresh","Janna","Annie"|"JungAD","Lee Sin","Jarvan IV","Vi"|"JungAP","Fiddlesticks","Udyr","Nidalee"
