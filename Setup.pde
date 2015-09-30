@@ -44,7 +44,7 @@ void populateChampLib()
     "Hecarim", "Heimerdinger", "Irelia", "Janna", "Jarvan IV",
     "Jax", "Jayce", "Jinx", "Kalista", "Karma",
     "Karthus", "Kassadin", "Katarina", "Kayle", "Kennen",
-    "Kha'Zix", "Kog'Maw", "Leblanc", "Lee Sin", "Leona",
+    "Kha'Zix", "Kindred", "Kog'Maw", "Leblanc", "Lee Sin", "Leona",
     "Lissandra", "Lulu", "Lux", "Malphite", "Malzahar",
     "Maokai", "Master Yi", "Miss Fortune", "Mordekaiser",
     "Morgana", "Nami", "Nasus", "Nautilus", "Nidalee",
