@@ -3,11 +3,11 @@ void setTitle()
   int i = int(random(0, 10));
   if( i <= 4 )
   {
-    frame.setTitle("(~˘▾˘)~");
+    surface.setTitle("(~˘-˘)~");
   }
   else
   {
-    frame.setTitle("~(˘▾˘~)");
+    surface.setTitle("~(˘-˘~)");
   }
 }
 
@@ -15,7 +15,7 @@ void moveScreen()
 {
   if( !finishMoveScreen )
   {
-    frame.setLocation( int(( displayWidth - width ) - (calcPercent(displayWidth, 1.3 ))), int(calcPercent(displayHeight, 1.3)) );
+    surface.setLocation( int(( displayWidth - width ) - (calcPercent(displayWidth, 1.3 ))), int(calcPercent(displayHeight, 1.3)) );
     if( finishMoveScreen_flag++ > 4 )
     {
       finishMoveScreen = true;

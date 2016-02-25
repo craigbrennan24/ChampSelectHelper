@@ -38,7 +38,7 @@ void settings()
 void setup()
 {
   divSize = int(calcPercent( wHeight, 9.5));
-  frame.setResizable(false);
+  surface.setResizable(false);
   populateLib(loadData());
   populateChampLib();
   setTitle();
