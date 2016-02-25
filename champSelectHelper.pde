@@ -27,12 +27,17 @@ boolean editScreen_setup = false;
 boolean mainScreen_setup = false;
 boolean dataFileFound = true;
 int errorCode = 0;
+float wHeight = 1080;
+
+void settings()
+{
+  wHeight = calcPercent( displayHeight, 88 );
+  size( 250, int(wHeight), P2D);
+}
 
 void setup()
 {
-  float wHeight = calcPercent( displayHeight, 88 );
   divSize = int(calcPercent( wHeight, 9.5));
-  size( 250, int(wHeight), P2D );
   frame.setResizable(false);
   populateLib(loadData());
   populateChampLib();
